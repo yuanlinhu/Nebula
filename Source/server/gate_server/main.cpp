@@ -1,19 +1,17 @@
 #include <iostream>
 
-#include <event2/event.h>
 
-#include "player.h"
+
+#include "client.h"
 
 using namespace std;
 
 
 
-int main()
+int main(int argc, char** argv)
 {
-    Player player;
-	int result = player.add(3, 5);
-    cout<<"result = "<<result<<endl;
-    event_base* base = event_base_new();
+    Client client;
+	client.init();
 
     return 0;
 }
