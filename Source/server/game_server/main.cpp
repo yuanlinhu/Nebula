@@ -2,9 +2,16 @@
 
 
 
+#include "server.h"
 
-int main()
+using namespace std;
+
+
+
+int main(int argc, char** argv)
 {
-    std::cout<<"hello"<<std::endl;
+    Server server;
+	server.init();
+
     return 0;
 }
