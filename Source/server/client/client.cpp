@@ -28,8 +28,10 @@ Client::Client()
 	event_base* m_base = event_base_new();
 }
 
-void Client::init()
+void Client::init(std::string& ip, int port)
 {
+	m_ip = ip;
+	m_port = port;
 
 	bufferevent* bev = bufferevent_socket_new(m_base, -1, BEV_OPT_CLOSE_ON_FREE);
 

@@ -26,13 +26,16 @@
 
 struct evconnlistener;
 struct bufferevent;
+struct event_base;
+
 
 class Server
 {
 public:
 	Server();
+    ~Server();
 public:
-	void init();
+	void init(std::string& ip, int port);
 public:
 	static void listener_cb(evconnlistener* listener, evutil_socket_t fd, sockaddr* addr, int socklen, void* args);
 	static void socket_read_cb(bufferevent* bev, void* args);
@@ -41,6 +44,9 @@ public:
 private:
 	int m_port;
 	std::string m_ip;
+
+    event_base* m_base;
+    evconnlistener* m_listener;
 };
 
 

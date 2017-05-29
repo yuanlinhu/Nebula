@@ -12,7 +12,7 @@ class Client
 {
 public:
 	Client();
-	void init();
+	void init(std::string& ip, int port);
 
 public:
 	int tcp_connect_server(std::string server_ip, int port);

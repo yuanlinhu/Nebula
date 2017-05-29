@@ -11,5 +11,7 @@ include_directories(./)
 include_directories(/usr/local/include)
 include_directories(/usr/local/lib)
 
+add_definitions(-g)
+
 
 target_link_libraries(gate -levent)
