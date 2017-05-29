@@ -1,0 +1,7 @@
+
+cmake ../../../Source/server/gate_server/
+
+make clean
+
+make 
+
