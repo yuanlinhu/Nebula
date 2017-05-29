@@ -2,7 +2,7 @@
 
 
 
-#include "server.h"
+#include "client.h"
 
 using namespace std;
 
@@ -10,8 +10,8 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-    Server server;
-	server.init();
+    Client client;
+	client.init();
 
     return 0;
 }
