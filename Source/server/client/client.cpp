@@ -50,7 +50,7 @@ void Client::init(std::string& ip, int port)
 	memset(&server_addr, 0, sizeof(server_addr));
 
 	server_addr.sin_family = AF_INET;
-	server_addr.sin_port = htons(m_port);
+	server_addr.sin_port = (m_port);
 	inet_aton(m_ip.c_str(), &server_addr.sin_addr);
 
 	bufferevent_socket_connect(bev, (sockaddr*)&server_addr, sizeof(server_addr));
