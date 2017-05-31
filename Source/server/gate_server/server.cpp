@@ -22,11 +22,12 @@
 #include <event2/listener.h>
 #include <event2/thread.h>
 
+
 Server::Server()
 :m_base(NULL)
 ,m_listener(NULL)
 {
-    event_base* m_base = event_base_new();
+
 }
 
 Server::~Server()
@@ -46,6 +47,11 @@ void Server::init(std::string& ip, int port)
 	sin.sin_family = AF_INET;
 	sin.sin_port = m_port;
 
+    event_base* m_base = event_base_new();
+    if(NULL == m_base)
+    {
+        cout<<"new Server m_base = "<<m_base<<endl;
+    }
 
     evconnlistener* m_listener = evconnlistener_new_bind(m_base, listener_cb, m_base,
                                                         LEV_OPT_REUSEABLE | LEV_OPT_CLOSE_ON_FREE,

@@ -24,6 +24,9 @@
 #include <event2/listener.h>
 #include <event2/thread.h>
 
+
+using namespace std;
+
 struct evconnlistener;
 struct bufferevent;
 struct event_base;
