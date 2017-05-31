@@ -32,13 +32,23 @@ Server::Server()
 
 Server::~Server()
 {
-    evconnlistener_free(m_listener);
-    event_base_free(m_base);
+    if(NULL != m_listener)
+    {
+        evconnlistener_free(m_listener);
+
+    }
+
+    if(NULL != m_base)
+    {
+        event_base_free(m_base);
+
+    }
 }
 
 
 void Server::init(std::string& ip, int port)
 {
+    cout<<"Server::init ip:["<<ip<<"]"<<endl;
 	m_ip = ip;
 	m_port = port;
 
@@ -50,7 +60,7 @@ void Server::init(std::string& ip, int port)
     event_base* m_base = event_base_new();
     if(NULL == m_base)
     {
-        cout<<"new Server m_base = "<<m_base<<endl;
+        cout<<"Server::init m_base = "<<m_base<<endl;
     }
 
     evconnlistener* m_listener = evconnlistener_new_bind(m_base, listener_cb, m_base,
@@ -63,18 +73,21 @@ void Server::init(std::string& ip, int port)
 
 void Server::listener_cb(evconnlistener* listener, evutil_socket_t fd, sockaddr* addr, int socklen, void* args)
 {
+    cout<<"Server::listener_cb args:["<<args<<"]"<<endl;
     int ii = 0;
     ii++;
 }
 
 void Server::socket_read_cb(bufferevent* bev, void* args)
 {
+    cout<<"Server::socket_read_cb args:["<<args<<"]"<<endl;
     int ii = 0;
     ii++;
 }
 
-void Server::socket_event_cb(bufferevent* bev, void* arg)
+void Server::socket_event_cb(bufferevent* bev, void* args)
 {
+    cout<<"Server::socket_event_cb args:["<<args<<"]"<<endl;
     int ii = 0;
     ii++;
 }

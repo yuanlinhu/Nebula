@@ -25,13 +25,20 @@ using namespace std;
 
 Client::Client()
 {
-	event_base* m_base = event_base_new();
+
 }
 
 void Client::init(std::string& ip, int port)
 {
+	cout<<"Client::init args:["<<ip<<"]"<<endl;
 	m_ip = ip;
 	m_port = port;
+
+	event_base* m_base = event_base_new();
+	if(NULL == m_base)
+	{
+		cout<<"Client::init m_base = "<<m_base<<endl;
+	}
 
 	bufferevent* bev = bufferevent_socket_new(m_base, -1, BEV_OPT_CLOSE_ON_FREE);
 
@@ -96,7 +103,7 @@ void Client::event_cb(bufferevent* bev, short events, void* args)
 	}
 	else if(events & BEV_EVENT_ERROR)
 	{
-		cout<<"some other error "<<endl;
+		cout<<"some other error events = "<<events<<endl;
 	}
 	else if(events & BEV_EVENT_CONNECTED)
 	{
