@@ -71,11 +71,19 @@ void Server::init(std::string& ip, int port)
     event_base_dispatch(m_base);
 }
 
-void Server::listener_cb(evconnlistener* listener, evutil_socket_t fd, sockaddr* addr, int socklen, void* args)
+void Server::listener_cb(evconnlistener* listener, evutil_socket_t fd, sockaddr* sock, int socklen, void* args)
 {
     cout<<"Server::listener_cb args:["<<args<<"]"<<endl;
-    int ii = 0;
-    ii++;
+    printf("accept a client %d\n", fd);
+
+    event_base *base = (event_base*)args;
+
+    //为这个客户端分配一个bufferevent
+    bufferevent *bev =  bufferevent_socket_new(base, fd,
+                                               BEV_OPT_CLOSE_ON_FREE);
+
+    bufferevent_setcb(bev, Server::socket_read_cb, NULL, Server::socket_event_cb, NULL);
+    bufferevent_enable(bev, EV_READ | EV_PERSIST);
 }
 
 void Server::socket_read_cb(bufferevent* bev, void* args)
@@ -83,11 +91,28 @@ void Server::socket_read_cb(bufferevent* bev, void* args)
     cout<<"Server::socket_read_cb args:["<<args<<"]"<<endl;
     int ii = 0;
     ii++;
+    char msg[4096] = {0};
+
+    size_t len = bufferevent_read(bev, msg, sizeof(msg)-1 );
+
+    msg[len] = '\0';
+    printf("server read the data %s\n", msg);
+
+    char reply[] = "I has read your data";
+    bufferevent_write(bev, reply, strlen(reply) );
 }
 
-void Server::socket_event_cb(bufferevent* bev, void* args)
+void Server::socket_event_cb(bufferevent* bev, short events, void* args)
 {
     cout<<"Server::socket_event_cb args:["<<args<<"]"<<endl;
     int ii = 0;
     ii++;
+
+    if (events & BEV_EVENT_EOF)
+        printf("connection closed\n");
+    else if (events & BEV_EVENT_ERROR)
+        printf("some other error\n");
+
+    //这将自动close套接字和free读写缓冲区
+    bufferevent_free(bev);
 }

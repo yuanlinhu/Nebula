@@ -40,9 +40,9 @@ public:
 public:
 	void init(std::string& ip, int port);
 public:
-	static void listener_cb(evconnlistener* listener, evutil_socket_t fd, sockaddr* addr, int socklen, void* args);
+	static void listener_cb(evconnlistener* listener, evutil_socket_t fd, sockaddr* sock, int socklen, void* args);
 	static void socket_read_cb(bufferevent* bev, void* args);
-	static void socket_event_cb(bufferevent* bev, void* arg);
+	static void socket_event_cb(bufferevent* bev, short events, void* arg);
 
 private:
 	int m_port;
