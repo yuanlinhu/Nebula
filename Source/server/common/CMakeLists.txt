@@ -5,13 +5,15 @@ project(server_common)
 
 aux_source_directory(.  SRC_LIST)
 
-add_library(server_common  ${SRC_LIST})
+add_library(server_common  STATIC ${SRC_LIST})
 
 include_directories(./)
 include_directories(/usr/local/include)
 include_directories(/usr/local/lib)
 
 add_definitions(-g)
+
+install(FILES ./build/libserver_common.a DESTINATION /usr/local/lib)
 
 
 target_link_libraries(server_common -levent)

@@ -11,15 +11,15 @@ add_executable(gate  ${SRC_LIST})
 
 
 include_directories(/usr/local/include)
-include_directories(/usr/local/lib)
 include_directories(./)
 include_directories(../common)
 
+set(COMMON_LINK_DIR /home/share/Nebula/Source/server/common/build)
 
-link_directories("../common")
-link_directories("../common/build")
+link_directories(/usr/local/lib)
+link_directories(/home/share/Nebula/Source/server/common/build)
 
-find_library(COMM_LIB comm ../common NO_DEFAULT_PATH)
+#find_library(COMM_LIB comm ../common NO_DEFAULT_PATH)
 
 
 
