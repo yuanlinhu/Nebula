@@ -37,8 +37,14 @@ class Server
 public:
 	Server();
     ~Server();
+
+public:
+	event_base* get_event_base();
 public:
 	void init(std::string& ip, int port);
+
+	void hand_input(void* msg, std::string& ret_msg);
+
 public:
 	static void listener_cb(evconnlistener* listener, evutil_socket_t fd, sockaddr* sock, int socklen, void* args);
 	static void socket_read_cb(bufferevent* bev, void* args);
