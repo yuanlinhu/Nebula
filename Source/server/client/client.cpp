@@ -28,11 +28,12 @@ Client::Client()
 
 }
 
-void Client::init(std::string& ip, int port)
+void Client::init(std::string& ip, int port, int client_id)
 {
 	cout<<"Client::init args:["<<ip<<"]"<<endl;
 	m_ip = ip;
 	m_port = port;
+	m_client_id = client_id;
 
 	event_base* m_base = event_base_new();
 	if(NULL == m_base)

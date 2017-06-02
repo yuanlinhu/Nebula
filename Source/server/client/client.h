@@ -24,8 +24,9 @@ public:
 
 private:
 	event_base* m_base;
-	int m_port;
 	std::string m_ip;
+	int m_port;
+	int m_client_id;
 };
 
 
