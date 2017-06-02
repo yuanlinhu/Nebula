@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gate_server", "gate_server\gate_server.vcproj", "{2FAD2B8E-3394-4921-9271-B0738B3E7567}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2FAD2B8E-3394-4921-9271-B0738B3E7567}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2FAD2B8E-3394-4921-9271-B0738B3E7567}.Debug|Win32.Build.0 = Debug|Win32
+		{2FAD2B8E-3394-4921-9271-B0738B3E7567}.Release|Win32.ActiveCfg = Release|Win32
+		{2FAD2B8E-3394-4921-9271-B0738B3E7567}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
