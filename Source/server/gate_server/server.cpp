@@ -26,6 +26,16 @@
 #include "client_info.h"
 
 
+struct CommonMsg
+{
+    int id;
+    int type;
+    int sub_type;
+
+};
+
+
+
 Server::Server()
 :m_base(NULL)
 ,m_listener(NULL)
@@ -91,14 +101,17 @@ void Server::init(std::string& ip, int port)
 void Server::hand_input(void* msg, std::string& ret_msg)
 {
     std::string reply;
-	char* msg_str = (char*)msg;
+    CommonMsg* msg_str = (CommonMsg*)msg;
 
     reply.clear();
-    reply.assign(msg_str);
 
     reply += "";
 
-	cout<<"Server::hand_input ===============>>>> reply = "<<reply<<endl;
+	cout<<"Server::hand_input ===============>>>> msg_str = "<<(msg_str->id)<<endl;
+    cout<<"Server::hand_input ===============>>>> msg_str = "<<(msg_str->type)<<endl;
+    cout<<"Server::hand_input ===============>>>> msg_str = "<<(msg_str->sub_type)<<endl;
+
+    msg_str->id += 10;
 
     std::vector<ClientInfo*> client_list;
     m_client_manager->get_client_list(client_list);
@@ -112,7 +125,7 @@ void Server::hand_input(void* msg, std::string& ret_msg)
             continue;
         }
 
-        bufferevent_write(temp_client->get_bev(), reply.c_str(), reply.size() );
+        bufferevent_write(temp_client->get_bev(), msg_str, sizeof(*msg_str) );
     }
 
 

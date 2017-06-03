@@ -22,8 +22,19 @@
 using namespace std;
 
 
+struct CommonMsg
+{
+    int id;
+    int type;
+    int sub_type;
+
+};
 
 Client::Client()
+:m_base(NULL)
+,m_port(0)
+,m_client_id(0)
+,m_bev(NULL)
 {
 
 }
@@ -43,11 +54,11 @@ void Client::init(std::string& ip, int port, int client_id)
 		cout<<"Client::init m_base = "<<m_base<<endl;
 	}
 
-	bufferevent* bev = bufferevent_socket_new(m_base, -1, BEV_OPT_CLOSE_ON_FREE);
+	m_bev = bufferevent_socket_new(m_base, -1, BEV_OPT_CLOSE_ON_FREE);
 
-	event* ev_cmd = event_new(m_base, STDIN_FILENO, EV_READ | EV_PERSIST, cmd_msg_cb, (void*)bev);
+	m_ev_cmd = event_new(m_base, STDIN_FILENO, EV_READ | EV_PERSIST, cmd_msg_cb, (void*)this);
 
-	event_add(ev_cmd, NULL);
+	event_add(m_ev_cmd, NULL);
 
 	sockaddr_in server_addr;
 	memset(&server_addr, 0, sizeof(server_addr));
@@ -56,11 +67,10 @@ void Client::init(std::string& ip, int port, int client_id)
 	server_addr.sin_port = (m_port);
 	inet_aton(m_ip.c_str(), &server_addr.sin_addr);
 
-	bufferevent_socket_connect(bev, (sockaddr*)&server_addr, sizeof(server_addr));
+	bufferevent_socket_connect(m_bev, (sockaddr*)&server_addr, sizeof(server_addr));
 
-	bufferevent_setcb(bev, server_msg_cb, NULL, event_cb, (void*)ev_cmd);
-	bufferevent_enable(bev, EV_READ | EV_PERSIST);
-
+	bufferevent_setcb(m_bev, server_msg_cb, NULL, event_cb, (void*)this);
+	bufferevent_enable(m_bev, EV_READ | EV_PERSIST);
 
 	event_base_dispatch(m_base);
 }
@@ -83,9 +93,17 @@ void Client::cmd_msg_cb(int fd, short events, void* args)
 
 	cout<<"cmd_msg_cb msg: "<<msg<<endl;
 
-	bufferevent* bev = (bufferevent*)args;
+	Client* client = (Client*)args;
+	bufferevent* bev = client->get_bev();
 
-	bufferevent_write(bev, msg, ret);
+
+
+    CommonMsg newMsg;
+    newMsg.id = client->get_client_id();
+    newMsg.type = client->get_port();
+    newMsg.sub_type = 1;
+
+	bufferevent_write(bev, &newMsg, sizeof(newMsg));
 	
 }
 
@@ -95,7 +113,19 @@ void Client::server_msg_cb(bufferevent* bev, void* args)
 
 	int len = bufferevent_read(bev, msg, sizeof(msg));
 
-	cout<<"server_msg_cb recv msg:["<<msg<<"]"<<endl;
+	Client* client = (Client*)args;
+	client->hand_input(msg, len);
+
+
+}
+
+void Client::hand_input(void* msg, int len)
+{
+	CommonMsg* common_msg = (CommonMsg*)msg;
+
+	cout<<"Client::hand_input common_msg->id: "<<common_msg->id<<endl;
+	cout<<"Client::hand_input common_msg->type: "<<common_msg->type<<endl;
+	cout<<"Client::hand_input common_msg->sub_type: "<<common_msg->sub_type<<endl;
 }
 
 void Client::event_cb(bufferevent* bev, short events, void* args)
@@ -119,4 +149,19 @@ void Client::event_cb(bufferevent* bev, short events, void* args)
 	event* ev = (event*)args;
 	event_free(ev);
 	return;
+}
+
+bufferevent* Client::get_bev()
+{
+	return m_bev;
+}
+
+int Client::get_port()
+{
+	return m_port;
+}
+
+int Client::get_client_id()
+{
+	return m_client_id;
 }
