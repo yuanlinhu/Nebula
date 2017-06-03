@@ -36,6 +36,15 @@ YLH_Server::~YLH_Server()
 
 }
 
+event_base* YLH_Server::get_event_base()
+{
+    return m_event_base;
+}
+
+evconnlistener* YLH_Server::get_listener()
+{
+    return m_listener;
+}
 
 void YLH_Server::init_common()
 {
@@ -71,19 +80,35 @@ void YLH_Server::init_listener(const std::string& listen_ip, int listen_port)
 
 void YLH_Server::listener_cb(evconnlistener* listener, evutil_socket_t fd, sockaddr* sock, int socklen, void* args)
 {
-//    cout<<"Server::listener_cb args:["<<args<<"]"<<endl;
-//    printf("accept a client %d\n", fd);
-//
-//    Server *server = (Server*)args;
-//
-//    event_base* base = server->get_event_base();
-//    //为这个客户端分配一个bufferevent
-//    bufferevent *bev =  bufferevent_socket_new(base, fd,
-//                                               BEV_OPT_CLOSE_ON_FREE);
-//
-//    bufferevent_setcb(bev, Server::socket_read_cb, NULL, Server::socket_event_cb, (args));
-//    bufferevent_enable(bev, EV_READ | EV_PERSIST);
-//
-//
-//    server->get_client_manager()->add_client_info(fd, sock, bev);
+    cout<<"Server::listener_cb fd:["<<fd<<"]"<<endl;
+
+    YLH_Server *server = (YLH_Server*)args;
+
+    event_base* base = server->get_event_base();
+
+    //为这个客户端分配一个bufferevent
+    bufferevent *new_conn_bev =  bufferevent_socket_new(base, fd,
+                                               BEV_OPT_CLOSE_ON_FREE);
+
+    bufferevent_setcb(new_conn_bev, YLH_Server::socket_read_cb, NULL, YLH_Server::socket_event_cb, (args));
+    bufferevent_enable(new_conn_bev, EV_READ | EV_PERSIST);
+
+
+    server->add_connect_info(fd, sock, new_conn_bev);
+}
+
+void YLH_Server::socket_read_cb(bufferevent* bev, void* args)
+{
+
+}
+
+void YLH_Server::socket_event_cb(bufferevent* bev, short events, void* arg)
+{
+
+}
+
+
+void YLH_Server::add_connect_info(evutil_socket_t sock_fd, sockaddr* sock, bufferevent *bev)
+{
+
 }
