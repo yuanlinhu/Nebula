@@ -12,6 +12,8 @@ struct event_base;
 struct evconnlistener;
 struct bufferevent;
 
+class ClientSockManager;
+
 class YLH_Server
 {
 public:
@@ -29,6 +31,12 @@ public:
     static void listener_cb(evconnlistener* listener, evutil_socket_t fd, sockaddr* sock, int socklen, void* args);
     static void socket_read_cb(bufferevent* bev, void* args);
     static void socket_event_cb(bufferevent* bev, short events, void* arg);
+
+
+public:
+    //协议处理
+    void hand_input(void* msg, int len);
+
 
 public:
     //初始化
@@ -51,6 +59,7 @@ private:
     //监听相关
     std::string         m_listen_ip;
     int                 m_listen_port;
+    ClientSockManager*  m_client_manager;
 
     //连接相关
 };
