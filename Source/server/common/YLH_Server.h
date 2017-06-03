@@ -27,6 +27,9 @@ public:
     evconnlistener*     get_listener();
 
 
+    ClientSockManager*  get_client_manager();
+    ClientSockManager*  get_connect_manager();
+
 public:
     //事件库
     static void listener_cb(evconnlistener* listener, evutil_socket_t fd, sockaddr* sock, int socklen, void* args);
@@ -40,6 +43,9 @@ public:
     //协议处理
     void hand_input(void* msg, int len);
 
+public:
+    //发协议相关函数
+    void broad_to_all_server(void* msg, int len);
 
 public:
     //初始化

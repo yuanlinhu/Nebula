@@ -1,0 +1,3 @@
+cd /home/share/Nebula/Source/server/common/build && rm -rf * && cmake .. && make && make install && 
+cd /home/share/Nebula/Source/server/gate_server/build && rm -rf * && cmake .. && make &&
+cd /home/share/Nebula/Source/server/client/build && rm -rf * && cmake .. && make

@@ -63,6 +63,16 @@ evconnlistener* YLH_Server::get_listener()
     return m_listener;
 }
 
+ClientSockManager* YLH_Server::get_client_manager()
+{
+    return m_client_manager;
+}
+
+ClientSockManager* YLH_Server::get_connect_manager()
+{
+    return m_connect_manager;
+}
+
 void YLH_Server::init_common()
 {
     m_event_base = event_base_new();
@@ -194,7 +204,9 @@ void YLH_Server::hand_input(void* msg, int len)
 {
     CommonMsg* client_msg = (CommonMsg*)msg;
 
-    cout<<"YLH_Server::hand_input msg_str:"<<client_msg<<endl;
+    cout<<"YLH_Server::hand_input client_msg->id: "<<client_msg->id<<endl;
+    cout<<"YLH_Server::hand_input client_msg->type: "<<client_msg->type<<endl;
+    cout<<"YLH_Server::hand_input client_msg->sub_type: "<<client_msg->sub_type<<endl;
 
     CommonMsg retMsg;
     retMsg.id = client_msg->id + 10;
@@ -221,22 +233,53 @@ void YLH_Server::hand_input(void* msg, int len)
 
 void YLH_Server::cmd_msg_cb(int fd, short events, void* args)
 {
-//    char msg[1024] = {0};
-//
-//    int ret = read(fd, msg, sizeof(msg));
-//    if(ret < 0)
+    char msg[1024] = {0};
+
+    int ret = read(fd, msg, sizeof(msg));
+    if(ret < 0)
+    {
+        cout<<"cmd_msg_cb read error"<<endl;
+        return;
+    }
+
+    cout<<"cmd_msg_cb msg: "<<msg<<endl;
+
+    YLH_Server* server = (YLH_Server*)args;
+
+    CommonMsg newMsg;
+    newMsg.id = 111;//server->get_client_id();
+    newMsg.type = 222;//server->get_port();
+    newMsg.sub_type = 333;
+
+    server->broad_to_all_server(&newMsg, sizeof(newMsg));
+
+
+//    ClientSockManager* client_sock_manager = server.get_connect_manager();
+//    if(NULL == client_sock_manager)
 //    {
-//        cout<<"cmd_msg_cb read error"<<endl;
+//        cout<<"YLH_Server::cmd_msg_cb client_sock_manager = NULL"<<endl;
 //        return;
 //    }
+
+//    std::vector<ClientSock*> server_list;
+//    client_sock_manager->get_client_list(server_list);
 //
-//    cout<<"cmd_msg_cb msg: "<<msg<<endl;
+//    std::vector<ClientSock*>::iterator iter;
+//    for(iter = server_list.begin(); iter != server_list.end(); ++iter)
+//    {
+//        ClientSock* sock = *iter;
+//        if(NULL == sock)
+//        {
+//            continue;
+//        }
 //
-//    Client* client = (Client*)args;
-//    bufferevent* bev = client->get_bev();
+//        bufferevent* bev = sock->get_bev();
 //
+//    }
 //
-//
+
+
+
 //    CommonMsg newMsg;
 //    newMsg.id = client->get_client_id();
 //    newMsg.type = client->get_port();
@@ -246,14 +289,43 @@ void YLH_Server::cmd_msg_cb(int fd, short events, void* args)
 
 }
 
+void YLH_Server::broad_to_all_server(void* msg, int len)
+{
+    ClientSockManager* client_sock_manager = this->get_connect_manager();
+    if(NULL == client_sock_manager)
+    {
+        cout<<"YLH_Server::cmd_msg_cb client_sock_manager = NULL"<<endl;
+        return;
+    }
+
+    std::vector<ClientSock*> server_list;
+    client_sock_manager->get_client_list(server_list);
+
+    std::vector<ClientSock*>::iterator iter;
+    for(iter = server_list.begin(); iter != server_list.end(); ++iter)
+    {
+        ClientSock* sock = *iter;
+        if(NULL == sock)
+        {
+            continue;
+        }
+
+        bufferevent* bev = sock->get_bev();
+        if(NULL == bev)
+        {
+            continue;
+        }
+
+        bufferevent_write(bev, msg, len);
+    }
+}
+
 void YLH_Server::server_msg_cb(bufferevent* bev, void* args)
 {
-//    char msg[1024] = {0};
-//
-//    int len = bufferevent_read(bev, msg, sizeof(msg));
-//
-//    Client* client = (Client*)args;
-//    client->hand_input(msg, len);
+    char msg[1024] = {0};
 
+    int len = bufferevent_read(bev, msg, sizeof(msg));
 
+    YLH_Server* client = (YLH_Server*)args;
+    client->hand_input(msg, len);
 }
