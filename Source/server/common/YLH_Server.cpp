@@ -76,6 +76,7 @@ void YLH_Server::init_common()
 
 void YLH_Server::run()
 {
+    cout<<"server has started !"<<endl;
     event_base_dispatch(m_event_base);
 }
 
@@ -97,6 +98,37 @@ void YLH_Server::init_listener(const std::string& listen_ip, int listen_port)
                                          (sockaddr*)(&sin), sizeof(sockaddr_in));
 }
 
+
+void YLH_Server::init_connection(const std::string& connect_ip, int connect_port)
+{
+    m_connect_ip    = connect_ip;
+    m_connect_port  = connect_port;
+//    m_client_id = client_id;
+
+    sockaddr_in server_addr;
+    memset(&server_addr, 0, sizeof(server_addr));
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = m_connect_port;
+    inet_aton(m_connect_ip.c_str(), &server_addr.sin_addr);
+
+
+    bufferevent* new_bev = bufferevent_socket_new(m_event_base, -1, BEV_OPT_CLOSE_ON_FREE);
+
+
+    bufferevent_socket_connect(new_bev, (sockaddr*)&server_addr, sizeof(server_addr));
+
+    bufferevent_setcb(new_bev, server_msg_cb, NULL, socket_event_cb, (void*)this);
+    bufferevent_enable(new_bev, EV_READ | EV_PERSIST);
+
+    this->add_sock_client_by_connect((sockaddr*)&server_addr, new_bev);
+}
+
+void YLH_Server::init_cmd()
+{
+    m_ev_cmd = event_new(m_event_base, STDIN_FILENO, EV_READ | EV_PERSIST, cmd_msg_cb, (void*)this);
+    event_add(m_ev_cmd, NULL);
+}
+
 void YLH_Server::listener_cb(evconnlistener* listener, evutil_socket_t fd, sockaddr* sock, int socklen, void* args)
 {
     cout<<"Server::listener_cb fd:["<<fd<<"]"<<endl;
@@ -113,7 +145,7 @@ void YLH_Server::listener_cb(evconnlistener* listener, evutil_socket_t fd, socka
     bufferevent_enable(new_conn_bev, EV_READ | EV_PERSIST);
 
 
-    server->add_connect_info(fd, sock, new_conn_bev);
+    server->add_sock_client_by_listen(fd, sock, new_conn_bev);
 }
 
 void YLH_Server::socket_read_cb(bufferevent* bev, void* args)
@@ -136,16 +168,24 @@ void YLH_Server::socket_event_cb(bufferevent* bev, short events, void* args)
         printf("connection closed\n");
     else if (events & BEV_EVENT_ERROR)
         printf("some other error\n");
-
+    else if(events & BEV_EVENT_CONNECTED)
+    {
+        cout<<"client has connected to server "<<endl;
+        return;
+    }
     //这将自动close套接字和free读写缓冲区
     bufferevent_free(bev);
 }
 
-void YLH_Server::add_connect_info(evutil_socket_t sock_fd, sockaddr* sock, bufferevent *bev)
+void YLH_Server::add_sock_client_by_listen(evutil_socket_t sock_fd, sockaddr* sock, bufferevent *bev)
 {
     m_client_manager->add_client_sock(sock_fd, sock, bev);
 }
 
+void YLH_Server::add_sock_client_by_connect(sockaddr* sock, bufferevent *bev)
+{
+    m_connect_manager->add_client_sock(1, sock, bev);
+}
 
 
 void YLH_Server::hand_input(void* msg, int len)
@@ -171,8 +211,47 @@ void YLH_Server::hand_input(void* msg, int len)
             continue;
         }
 
-        bufferevent_write(temp_client->get_bev(), msg_str, sizeof(*msg_str) );
+        bufferevent_write(temp_client->get_bev(), &retMsg, sizeof(retMsg) );
     }
+
+
+}
+
+void YLH_Server::cmd_msg_cb(int fd, short events, void* args)
+{
+//    char msg[1024] = {0};
+//
+//    int ret = read(fd, msg, sizeof(msg));
+//    if(ret < 0)
+//    {
+//        cout<<"cmd_msg_cb read error"<<endl;
+//        return;
+//    }
+//
+//    cout<<"cmd_msg_cb msg: "<<msg<<endl;
+//
+//    Client* client = (Client*)args;
+//    bufferevent* bev = client->get_bev();
+//
+//
+//
+//    CommonMsg newMsg;
+//    newMsg.id = client->get_client_id();
+//    newMsg.type = client->get_port();
+//    newMsg.sub_type = 1;
+//
+//    bufferevent_write(bev, &newMsg, sizeof(newMsg));
+
+}
+
+void YLH_Server::server_msg_cb(bufferevent* bev, void* args)
+{
+//    char msg[1024] = {0};
+//
+//    int len = bufferevent_read(bev, msg, sizeof(msg));
+//
+//    Client* client = (Client*)args;
+//    client->hand_input(msg, len);
 
 
 }
