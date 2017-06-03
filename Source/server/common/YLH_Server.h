@@ -7,6 +7,8 @@
 
 #include <event2/util.h>
 
+#include "server_define.h"
+
 
 struct event;
 struct event_base;
@@ -15,10 +17,11 @@ struct bufferevent;
 
 class ClientSockManager;
 
+
 class YLH_Server
 {
 public:
-    YLH_Server();
+    YLH_Server(SERVER_MAIN_TYPE main_type);
     ~YLH_Server();
 
 public:
@@ -31,13 +34,23 @@ public:
     ClientSockManager*  get_connect_manager();
 
 public:
-    //事件库
+    //-------------------事件库
+
+    //监听事件
     static void listener_cb(evconnlistener* listener, evutil_socket_t fd, sockaddr* sock, int socklen, void* args);
+
     static void socket_read_cb(bufferevent* bev, void* args);
-    static void socket_event_cb(bufferevent* bev, short events, void* arg);
-    static void cmd_msg_cb(int fd, short events, void* args);
+
     static void server_msg_cb(bufferevent* bev, void* args);
 
+    //定时器
+//    static void timeout_cb(int fd, short event, void *arg);
+
+    //错误事件
+    static void socket_event_cb(bufferevent* bev, short events, void* arg);
+
+    //控制台事件
+    static void cmd_msg_cb(int fd, short events, void* args);
 
 public:
     //协议处理
@@ -67,6 +80,9 @@ private:
     void add_sock_client_by_connect(sockaddr* sock, bufferevent *bev);
 
 private:
+    SERVER_MAIN_TYPE    m_server_main_type;
+
+
     event_base*         m_event_base;
     evconnlistener*     m_listener;
 
@@ -83,6 +99,12 @@ private:
 
     //读取屏幕字符串
     event*              m_ev_cmd;
+
+
+private:
+    YLH_Server();
+    YLH_Server(const YLH_Server&);
+    YLH_Server& operator=(const YLH_Server&);
 };
 
 

@@ -4,6 +4,7 @@
 
 #include "client.h"
 #include "YLH_Server.h"
+#include "server_define.h"
 
 using namespace std;
 
@@ -22,7 +23,7 @@ int main(int argc, char** argv)
 //    Client client;
 //	client.init(ip, port, client_id);
 
-    YLH_Server server;
+    YLH_Server server(SMT_GAME);
     server.init_common();
     server.init_cmd();
     server.init_connection(ip, port);

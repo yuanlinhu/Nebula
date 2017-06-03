@@ -7,9 +7,9 @@
 //#include "server_config_manager.h"
 
 #include "YLH_Server.h"
+#include "server_define.h"
 
 using namespace std;
-
 
 
 int main(int argc, char** argv)
@@ -25,7 +25,7 @@ int main(int argc, char** argv)
     std::string ip("192.168.18.76");
     int port = 9999;
 
-    YLH_Server server;
+    YLH_Server server(SMT_GATE);
     server.init_common();
     server.init_listener(ip, port);
 

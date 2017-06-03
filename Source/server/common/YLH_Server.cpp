@@ -39,8 +39,9 @@ struct CommonMsg
 };
 //testcode end
 
-YLH_Server::YLH_Server()
-:m_event_base(NULL)
+YLH_Server::YLH_Server(SERVER_MAIN_TYPE main_type)
+:m_server_main_type(main_type)
+,m_event_base(NULL)
 ,m_listener(NULL)
 ,m_client_manager(NULL)
 ,m_connect_manager(NULL)
