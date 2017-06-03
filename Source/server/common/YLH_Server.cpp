@@ -43,6 +43,7 @@ YLH_Server::YLH_Server()
 :m_event_base(NULL)
 ,m_listener(NULL)
 ,m_client_manager(NULL)
+,m_connect_manager(NULL)
 {
 
 }
@@ -72,6 +73,7 @@ void YLH_Server::init_common()
 
 
     m_client_manager = new ClientSockManager();
+    m_connect_manager = new ClientSockManager();
 }
 
 void YLH_Server::run()
