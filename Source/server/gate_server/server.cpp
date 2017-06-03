@@ -23,6 +23,7 @@
 #include <event2/thread.h>
 
 #include "client_info_manager.h"
+#include "client_info.h"
 
 
 Server::Server()
@@ -78,26 +79,43 @@ void Server::init(std::string& ip, int port)
 	cout<<"Server::init evconnlistener_new_bind m_base = "<<m_base<<endl;
 	cout<<"Server::init evconnlistener_new_bind this = "<<this<<endl;
 
-    m_listener = evconnlistener_new_bind(m_base, listener_cb, (void*)this,
-                                                        LEV_OPT_REUSEABLE | LEV_OPT_CLOSE_ON_FREE,
-                                                        10, (sockaddr*)(&sin),
-                                                       sizeof(sockaddr_in));
+    m_listener = evconnlistener_new_bind(m_base,
+                                         listener_cb, this,
+                                         LEV_OPT_REUSEABLE | LEV_OPT_CLOSE_ON_FREE,
+                                         10,
+                                         (sockaddr*)(&sin), sizeof(sockaddr_in));
 
     event_base_dispatch(m_base);
 }
 
 void Server::hand_input(void* msg, std::string& ret_msg)
 {
+    std::string reply;
 	char* msg_str = (char*)msg;
 
-	cout<<"Server::hand_input ===============>>>> msg = "<<(*msg_str)<<endl;
+    reply.clear();
+    reply.assign(msg_str);
 
-	ret_msg.clear();
-	ret_msg.assign(msg_str);
+    reply += "";
 
-	ret_msg += "  --from server";
+	cout<<"Server::hand_input ===============>>>> reply = "<<reply<<endl;
 
-	cout<<"Server::hand_input ===============>>>> msg_str = "<<msg_str<<endl;
+    std::vector<ClientInfo*> client_list;
+    m_client_manager->get_client_list(client_list);
+
+    std::vector<ClientInfo*>::iterator iter;
+    for(iter = client_list.begin(); iter != client_list.end(); ++iter)
+    {
+        ClientInfo* temp_client = *iter;
+        if(NULL == temp_client)
+        {
+            continue;
+        }
+
+        bufferevent_write(temp_client->get_bev(), reply.c_str(), reply.size() );
+    }
+
+
 }
 
 void Server::listener_cb(evconnlistener* listener, evutil_socket_t fd, sockaddr* sock, int socklen, void* args)
@@ -112,7 +130,7 @@ void Server::listener_cb(evconnlistener* listener, evutil_socket_t fd, sockaddr*
     bufferevent *bev =  bufferevent_socket_new(base, fd,
                                                BEV_OPT_CLOSE_ON_FREE);
 
-    bufferevent_setcb(bev, Server::socket_read_cb, NULL, Server::socket_event_cb, (NULL));
+    bufferevent_setcb(bev, Server::socket_read_cb, NULL, Server::socket_event_cb, (args));
     bufferevent_enable(bev, EV_READ | EV_PERSIST);
 
 
@@ -139,7 +157,7 @@ void Server::socket_read_cb(bufferevent* bev, void* args)
 
 	server->hand_input(msg, reply);
 
-    bufferevent_write(bev, reply.c_str(), reply.size() );
+//    bufferevent_write(bev, reply.c_str(), reply.size() );
 }
 
 void Server::socket_event_cb(bufferevent* bev, short events, void* args)
