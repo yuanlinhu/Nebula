@@ -44,7 +44,7 @@ public:
     static void server_msg_cb(bufferevent* bev, void* args);
 
     //定时器
-//    static void timeout_cb(int fd, short event, void *arg);
+    static void timeout_cb(int fd, short event, void *arg);
 
     //错误事件
     static void socket_event_cb(bufferevent* bev, short events, void* arg);
@@ -66,6 +66,7 @@ public:
     void init_listener(const std::string& ip, int port);
     void init_connection(const std::string& connect_ip, int connect_port);
     void init_cmd();
+    void init_timer(int second);
 
     void run();
 
@@ -97,9 +98,11 @@ private:
     ClientSockManager*  m_connect_manager;
 
 
-    //读取屏幕字符串
+    //读取控制台
     event*              m_ev_cmd;
 
+    //定时器
+    event*              m_ev_timer;
 
 private:
     YLH_Server();

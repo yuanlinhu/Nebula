@@ -27,6 +27,7 @@ int main(int argc, char** argv)
 
     YLH_Server server(SMT_GATE);
     server.init_common();
+    server.init_timer(2);
     server.init_listener(ip, port);
 
     server.run();

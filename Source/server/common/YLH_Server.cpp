@@ -142,6 +142,14 @@ void YLH_Server::init_cmd()
     event_add(m_ev_cmd, NULL);
 }
 
+void YLH_Server::init_timer(int second)
+{
+    struct timeval five_seconds = {second,0};
+
+    m_ev_timer = event_new(m_event_base, STDIN_FILENO, EV_TIMEOUT | EV_READ | EV_PERSIST, timeout_cb, (void*)this);
+    event_add(m_ev_timer, &five_seconds);
+}
+
 void YLH_Server::listener_cb(evconnlistener* listener, evutil_socket_t fd, sockaddr* sock, int socklen, void* args)
 {
     cout<<"Server::listener_cb fd:["<<fd<<"]"<<endl;
@@ -188,6 +196,11 @@ void YLH_Server::socket_event_cb(bufferevent* bev, short events, void* args)
     }
     //这将自动close套接字和free读写缓冲区
     bufferevent_free(bev);
+}
+
+void YLH_Server::timeout_cb(int fd, short event, void *arg)
+{
+    cout<<"YLH_Server::timeout_cb fd = "<<fd<<endl;
 }
 
 void YLH_Server::add_sock_client_by_listen(evutil_socket_t sock_fd, sockaddr* sock, bufferevent *bev)
