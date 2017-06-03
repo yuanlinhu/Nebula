@@ -22,12 +22,15 @@
 #include <event2/listener.h>
 #include <event2/thread.h>
 
+#include "client_info_manager.h"
+
 
 Server::Server()
 :m_base(NULL)
 ,m_listener(NULL)
+,m_client_manager(NULL)
 {
-
+    m_client_manager = new ClientInfoManager();
 }
 
 Server::~Server()
@@ -50,6 +53,10 @@ event_base* Server::get_event_base()
 	return m_base;
 }
 
+ClientInfoManager* Server::get_client_manager()
+{
+    return m_client_manager;
+}
 
 void Server::init(std::string& ip, int port)
 {
@@ -73,7 +80,7 @@ void Server::init(std::string& ip, int port)
 
     m_listener = evconnlistener_new_bind(m_base, listener_cb, (void*)this,
                                                         LEV_OPT_REUSEABLE | LEV_OPT_CLOSE_ON_FREE,
-                                                        10, (sockaddr*)&sin,
+                                                        10, (sockaddr*)(&sin),
                                                        sizeof(sockaddr_in));
 
     event_base_dispatch(m_base);
@@ -81,8 +88,6 @@ void Server::init(std::string& ip, int port)
 
 void Server::hand_input(void* msg, std::string& ret_msg)
 {
-
-
 	char* msg_str = (char*)msg;
 
 	cout<<"Server::hand_input ===============>>>> msg = "<<(*msg_str)<<endl;
@@ -109,6 +114,9 @@ void Server::listener_cb(evconnlistener* listener, evutil_socket_t fd, sockaddr*
 
     bufferevent_setcb(bev, Server::socket_read_cb, NULL, Server::socket_event_cb, (NULL));
     bufferevent_enable(bev, EV_READ | EV_PERSIST);
+
+
+    server->get_client_manager()->add_client_info(fd, sock, bev);
 }
 
 void Server::socket_read_cb(bufferevent* bev, void* args)

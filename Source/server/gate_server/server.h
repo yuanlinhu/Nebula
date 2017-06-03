@@ -5,24 +5,26 @@
 
 #include <string>
 
-#include<sys/types.h>  
-#include<sys/socket.h>  
-#include<netinet/in.h>  
-#include<arpa/inet.h>  
-#include<errno.h>  
-#include<unistd.h>  
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <errno.h>
+#include <unistd.h>
 
-#include<stdio.h>  
-#include<string.h>  
-#include<stdlib.h>  
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
-#include<event.h>  
-#include<event2/bufferevent.h>  
-#include<event2/buffer.h>  
-#include<event2/util.h>  
+#include <event.h>
+#include <event2/bufferevent.h>
+#include <event2/buffer.h>
+#include <event2/util.h>
 
 #include <event2/listener.h>
 #include <event2/thread.h>
+
+#include <event2/util.h>
 
 
 using namespace std;
@@ -30,6 +32,8 @@ using namespace std;
 struct evconnlistener;
 struct bufferevent;
 struct event_base;
+
+class ClientInfoManager;
 
 
 class Server
@@ -40,6 +44,8 @@ public:
 
 public:
 	event_base* get_event_base();
+	ClientInfoManager* get_client_manager();
+
 public:
 	void init(std::string& ip, int port);
 
@@ -56,6 +62,8 @@ private:
 
     event_base* m_base;
     evconnlistener* m_listener;
+
+    ClientInfoManager* m_client_manager;
 };
 
 

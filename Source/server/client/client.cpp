@@ -30,7 +30,9 @@ Client::Client()
 
 void Client::init(std::string& ip, int port, int client_id)
 {
-	cout<<"Client::init args:["<<ip<<"]"<<endl;
+	cout<<"Client::init ip:["<<ip<<"]"<<endl;
+	cout<<"Client::init port:["<<port<<"]"<<endl;
+	cout<<"Client::init client_id:["<<client_id<<"]"<<endl;
 	m_ip = ip;
 	m_port = port;
 	m_client_id = client_id;
