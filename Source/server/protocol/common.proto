@@ -1,0 +1,6 @@
+package common;
+
+message msg
+{
+    required int32 commonType = 1;     //必选字段
+}

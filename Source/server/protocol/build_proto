@@ -1,0 +1,2 @@
+rm -rf *.pb.*  && 
+protoc  --cpp_out=../common *.proto
