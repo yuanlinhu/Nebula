@@ -22,7 +22,7 @@ int main(int argc, char** argv)
 {
 	
 	demo::msg msg_test;
-//	msg_test.set_msgtype(1);
+	msg_test.set_msgtype(1);
 	
 //	common::head msg_head;
 //	msg_head.set_headtype(100);
