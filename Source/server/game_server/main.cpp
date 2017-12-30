@@ -41,6 +41,8 @@ echo_read_cb(struct bufferevent *bev, void *ctx)
 		tutorial::Person person;
 		person.ParseFromString(recvString);
 
+		printf("msg: <<id:[%d], name:[%s] \n", person.id(), person.name().c_str());
+
         /* Copy all the data from the input buffer to the output buffer. */
         //evbuffer_add_buffer(output, input);
 
@@ -131,7 +133,10 @@ main(int argc, char **argv)
 	}
 	evconnlistener_set_error_cb(listener, accept_error_cb);
 
+	printf("server start \n");
+
 	event_base_dispatch(base);
         
+	printf("server end \n");
 	return 0;
 }
