@@ -1,4 +1,5 @@
 #include "Example25FrameListener.h"
+#include "TutorialApplication.h"
 
 Example25FrameListener::Example25FrameListener( Ogre::Entity* entity, Ogre::SceneNode* node, 
 											   OIS::Keyboard* keyboard, Ogre::Camera* cam, OIS::Mouse*mouse)
@@ -77,6 +78,11 @@ bool Example25FrameListener::frameStarted( const Ogre::FrameEvent& evt )
 		sinbadTranslate += vec;
 
 		mNode->translate(vec * evt.timeSinceLastFrame);
+	}
+
+	if (mKeyboard->isKeyDown(OIS::KC_M))
+	{
+		TutorialApplication::send_msg_to_server(987654);
 	}
 
 	if(sinbadTranslate != Ogre::Vector3(0, 0, 0))

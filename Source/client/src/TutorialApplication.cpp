@@ -42,6 +42,7 @@ http://www.ogre3d.org/wiki/
 #include<event2/bufferevent.h>  
 #include<event2/buffer.h>  
 #include<event2/util.h>  
+#include <event2/thread.h>
 
 #include "address.pb.h"
 #include <iostream>
@@ -73,46 +74,65 @@ void cmd_msg_cb(int fd, short events, void* arg)
 // 	bufferevent_write(bev, msg, ret);  
 }  
 
-
+bufferevent* g_bev = NULL;
 void server_msg_cb(struct bufferevent* bev, void* arg)  
 {  
 	char msg[1024];  
 
+	g_bev = bev;
 	size_t len = bufferevent_read(bev, msg, sizeof(msg));  
 	msg[len] = '\0';  
 
 	printf("recv %s from server\n", msg);  
 }  
 
-void write_to_server(bufferevent *bev)
+
+void write_to_server(bufferevent *bev, int id)
 {
+	if(NULL == bev)
+	{
+		return;
+	}
 	tutorial::Person person;
 
 	person.set_name("flamingo32345 eewwsd ");     
-	person.set_id(1234565);     
+	person.set_id(id);     
 
 	cout<<person.name()<<endl;  
 	cout<<person.id()<<endl;  
 
 	std::string str;
 	person.SerializeToString(&str); // 将对象序列化到字符串，除此外还可以序列化到fstream等
-
 	bufferevent_write(bev, str.c_str(), str.size());
+
+	printf("msg: <<id:[%d], name:[%s] \n", person.id(), person.name());
+
 
 }
 
+void TutorialApplication::send_msg_to_server(int id)
+{
+	write_to_server(g_bev, id);
+
+}
 
 void event_cb(struct bufferevent *bev, short event, void *arg)  
 {  
 
 	if (event & BEV_EVENT_EOF)  
+	{
 		printf("connection closed\n");  
+		g_bev = NULL;
+	}
 	else if (event & BEV_EVENT_ERROR)  
+	{
 		printf("some other error\n");  
+	}
 	else if( event & BEV_EVENT_CONNECTED)  
 	{  
 		printf("the client has connected to server\n");  
-		write_to_server(bev);
+		g_bev = bev;
+		write_to_server(bev, 147258);
 		return ;  
 	}  
 
@@ -128,9 +148,16 @@ void event_cb(struct bufferevent *bev, short event, void *arg)
 }  
 
 
+static void timeout_cb(int fd, short event, void *params)  
+{  
+	write_to_server(g_bev, 33445566);
+} 
+
 
 static void Hello() {
 	// 睡眠一秒以模拟数据处理。
+
+	printf("client net start \n");
 
 	int port = 9876;
 	std::string ip = "127.0.0.1";
@@ -157,9 +184,18 @@ static void Hello() {
 	bufferevent_setcb(bev, server_msg_cb, NULL, event_cb, NULL);  
 	bufferevent_enable(bev, EV_READ | EV_PERSIST);  
 
+	//timer
+	event* timeout = event_new(new_event_base, -1, EV_TIMEOUT|EV_READ|EV_PERSIST, timeout_cb,
+		(char*)"Reading event");
+
+	timeval ten_sec;
+	ten_sec.tv_sec = 1;
+	ten_sec.tv_usec = 0;
+	evtimer_add(timeout, &ten_sec); 
+
  	event_base_dispatch(new_event_base);
 
-	std::cout << "Hello, World!" << std::endl;
+	printf("client net end \n");
 }
 
 
@@ -231,6 +267,9 @@ void TutorialApplication::init()
  		/* WinSock DLL.                                  */
  		return;
  	}
+
+
+	evthread_use_windows_threads();
 
 	boost::thread hello_thread(Hello);
 

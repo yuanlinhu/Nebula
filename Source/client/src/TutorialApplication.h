@@ -50,6 +50,11 @@ public:
 
 public:
 	void init();
+
+
+public:
+	static void send_msg_to_server(int id);
+
 protected:
 	//virtual bool setup();
 
