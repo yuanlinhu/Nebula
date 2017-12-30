@@ -1,0 +1,5 @@
+序列id,名称,模型,缩放x,缩放y,缩放z,位置x,位置y,位置z
+id,name,mesh_name,scale_x,scale_y,scale_z,pos_x,pos_y,pos_z
+1,模型1,Sinbad.mesh,3,3,3,0,4,0
+2,模型2,penguin.mesh,1,1,1,10,4,0
+3,模型3,tudorhouse.mesh,1,1,1,10,4,0
