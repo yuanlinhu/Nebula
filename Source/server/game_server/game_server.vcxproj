@@ -43,11 +43,11 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>G:\work\opensource\1\protobuf-2.6.0\vsprojects\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\3rdParty\protobuf-2.6.0\vsprojects\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>E:\yuanlinhu\open_source\Nebula\Lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\Lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>libprotobuf.lib;libprotoc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
