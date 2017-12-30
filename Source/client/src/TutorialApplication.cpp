@@ -26,6 +26,15 @@ http://www.ogre3d.org/wiki/
 
 using namespace Ogre;
 
+
+static void Hello() {
+	// 睡眠一秒以模拟数据处理。
+
+	std::cout << "Hello, World!" << std::endl;
+}
+
+
+
 //---------------------------------------------------------------------------
 TutorialApplication::TutorialApplication(void)
 {
@@ -77,6 +86,15 @@ void TutorialApplication::createManual(void)
 // 	Ogre::Entity * ent = mSceneMgr->createEntity("Quad");
 // 	Ogre::SceneNode* node = mSceneMgr->getRootSceneNode()->createChildSceneNode("Node1");
 // 	node->attachObject(ent);
+}
+
+bool TutorialApplication::setup()
+{
+	BaseApplication::setup();
+
+	boost::thread hello_thread(Hello);
+
+	return true;
 }
 
 //---------------------------------------------------------------------------

@@ -49,6 +49,8 @@ public:
     virtual ~TutorialApplication(void);
 
 protected:
+	virtual bool setup();
+
     virtual void createScene(void);
 	virtual void createCamera(void);
 	virtual void createViewports(void);
