@@ -32,7 +32,10 @@ echo_read_cb(struct bufferevent *bev, void *ctx)
         struct evbuffer *output = bufferevent_get_output(bev);
 
         /* Copy all the data from the input buffer to the output buffer. */
-        evbuffer_add_buffer(output, input);
+        //evbuffer_add_buffer(output, input);
+
+
+		//cout<<""<<input->get
 }
 
 static void
@@ -84,45 +87,41 @@ main(int argc, char **argv)
 	boost::thread hello_thread(Hello);
 
 
-        struct event_base *base;
-        struct evconnlistener *listener;
-        struct sockaddr_in sin;
+	struct event_base *base;
+	struct evconnlistener *listener;
+	struct sockaddr_in sin;
 
-        int port = 9876;
+	int port = 9876;
 
-        if (argc > 1) {
-                port = atoi(argv[1]);
-        }
-        if (port<=0 || port>65535) {
-                puts("Invalid port");
-                return 1;
-        }
+	if (argc > 1) {
+		port = atoi(argv[1]);
+	}
+	if (port<=0 || port>65535) {
+		puts("Invalid port");
+		return 1;
+	}
 
-        base = event_base_new();
-        if (!base) {
-                puts("Couldn't open event base");
-                return 1;
-        }
+	base = event_base_new();
+	if (!base) {
+		puts("Couldn't open event base");
+		return 1;
+	}
 
-        /* Clear the sockaddr before using it, in case there are extra
-         * platform-specific fields that can mess us up. */
-        memset(&sin, 0, sizeof(sin));
-        /* This is an INET address */
-        sin.sin_family = AF_INET;
-        /* Listen on 0.0.0.0 */
-        sin.sin_addr.s_addr = htonl(0);
-        /* Listen on the given port. */
-        sin.sin_port = htons(port);
+    memset(&sin, 0, sizeof(sin));
+    sin.sin_family = AF_INET;
+    sin.sin_addr.s_addr = htonl(0);
+    sin.sin_port = htons(port);
 
-        listener = evconnlistener_new_bind(base, accept_conn_cb, NULL,
-            LEV_OPT_CLOSE_ON_FREE|LEV_OPT_REUSEABLE, -1,
-            (struct sockaddr*)&sin, sizeof(sin));
-        if (!listener) {
-                perror("Couldn't create listener");
-                return 1;
-        }
-        evconnlistener_set_error_cb(listener, accept_error_cb);
+	listener = evconnlistener_new_bind(base, accept_conn_cb, NULL,
+		LEV_OPT_CLOSE_ON_FREE|LEV_OPT_REUSEABLE, -1,
+		(struct sockaddr*)&sin, sizeof(sin));
+	if (!listener) {
+		perror("Couldn't create listener");
+		return 1;
+	}
+	evconnlistener_set_error_cb(listener, accept_error_cb);
 
-        event_base_dispatch(base);
-        return 0;
+	event_base_dispatch(base);
+        
+	return 0;
 }
