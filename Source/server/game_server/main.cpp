@@ -14,6 +14,8 @@
 
 #include <boost/thread.hpp>
 
+#include "address.pb.h"
+
 using namespace std;
 
 void Hello() {
@@ -30,6 +32,14 @@ echo_read_cb(struct bufferevent *bev, void *ctx)
         /* This callback is invoked when there is data to read on bev. */
         struct evbuffer *input = bufferevent_get_input(bev);
         struct evbuffer *output = bufferevent_get_output(bev);
+
+		char msg[4096] = {0};
+		bufferevent_read(bev, msg, 4096);
+
+		std::string recvString = msg;
+
+		tutorial::Person person;
+		person.ParseFromString(recvString);
 
         /* Copy all the data from the input buffer to the output buffer. */
         //evbuffer_add_buffer(output, input);
@@ -84,7 +94,7 @@ main(int argc, char **argv)
 		return -1;
 	}
 
-	boost::thread hello_thread(Hello);
+	//boost::thread hello_thread(Hello);
 
 
 	struct event_base *base;
