@@ -1,7 +1,7 @@
 
 
 
-
+#include <iostream>
 #include <winsock2.h>
 
 #pragma  comment(lib,"ws2_32.lib")
@@ -12,6 +12,15 @@
 #include <event2/util.h>  
 #include <event2/event.h> 
 
+#include <boost/thread.hpp>
+
+using namespace std;
+
+void Hello() {
+	// 睡眠一秒以模拟数据处理。
+
+	std::cout << "Hello, World!" << std::endl;
+}
 
 
 
@@ -71,6 +80,9 @@ main(int argc, char **argv)
 	if(WSAStartup(sockVersion, &wsaData)!=0){
 		return -1;
 	}
+
+	boost::thread hello_thread(Hello);
+
 
         struct event_base *base;
         struct evconnlistener *listener;

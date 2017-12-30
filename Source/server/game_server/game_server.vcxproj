@@ -43,12 +43,12 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\3rdParty\protobuf-2.6.0\vsprojects\include;..\..\3rdParty\libevent\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\3rdParty\protobuf-2.6.0\vsprojects\include;..\..\3rdParty\libevent\include;..\..\3rdParty\ogre_1.9\boost</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\..\..\Lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libprotobuf.lib;libprotoc.lib;event_core.lib;event_extra.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libprotobuf.lib;libprotoc.lib;event_core.lib;event_extra.lib;..\..\3rdParty\ogre_1.9\boost\lib\libboost_thread-vc110-mt-gd-1_55.lib;..\..\3rdParty\ogre_1.9\boost\lib\libboost_date_time-vc110-mt-gd-1_55.lib;..\..\3rdParty\ogre_1.9\boost\lib\libboost_system-vc110-mt-gd-1_55.lib;..\..\3rdParty\ogre_1.9\boost\lib\libboost_chrono-vc110-mt-gd-1_55.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
