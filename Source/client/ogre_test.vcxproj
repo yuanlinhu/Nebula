@@ -41,7 +41,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\..\bin\debug</OutDir>
+    <OutDir>..\3rdParty\ogre_1.9\bin\debug</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -53,13 +53,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;BOOST_ALL_NO_LIB;INCLUDE_RTSHADER_SYSTEM;CMAKE_INTDIR="Debug";Sample_BezierPatch_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../boost;../../include/OGRE;../../include;../../include/OGRE/PlugIns/PCZSceneManager;../../include/OGRE/PlugIns/OctreeZone;../../include/OIS;../../Common/include;../../include/OGRE/RTShaderSystem;../../include/OGRE/Terrain;../../include/OGRE/Paging;../../include/OGRE/Volume;../../include/OGRE/Overlay;../../Samples/BezierPatch/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../3rdParty/ogre_1.9/boost;../3rdParty/ogre_1.9/include/OGRE;../3rdParty/ogre_1.9/include;../3rdParty/ogre_1.9/include/OGRE/PlugIns/PCZSceneManager;../3rdParty/ogre_1.9/include/OGRE/PlugIns/OctreeZone;../3rdParty/ogre_1.9/include/OIS;../3rdParty/ogre_1.9/Common/include;../3rdParty/ogre_1.9/include/OGRE/RTShaderSystem;../3rdParty/ogre_1.9/include/OGRE/Terrain;../3rdParty/ogre_1.9/include/OGRE/Paging;../3rdParty/ogre_1.9/include/OGRE/Volume;../3rdParty/ogre_1.9/include/OGRE/Overlay;../3rdParty/ogre_1.9/Samples/BezierPatch/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>NotSet</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;..\..\lib\Debug\OgreMain_d.lib;..\..\boost\lib\libboost_thread-vc110-mt-gd-1_55.lib;..\..\boost\lib\libboost_date_time-vc110-mt-gd-1_55.lib;..\..\boost\lib\libboost_system-vc110-mt-gd-1_55.lib;..\..\boost\lib\libboost_chrono-vc110-mt-gd-1_55.lib;..\..\lib\Debug\OgreRTShaderSystem_d.lib;..\..\lib\Debug\OgreTerrain_d.lib;..\..\lib\Debug\OgrePaging_d.lib;..\..\lib\Debug\OgreVolume_d.lib;..\..\lib\Debug\OgreOverlay_d.lib;..\..\lib\Debug\OIS_d.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;..\3rdParty\ogre_1.9\lib\Debug\OgreMain_d.lib;..\3rdParty\ogre_1.9\boost\lib\libboost_thread-vc110-mt-gd-1_55.lib;..\3rdParty\ogre_1.9\boost\lib\libboost_date_time-vc110-mt-gd-1_55.lib;..\3rdParty\ogre_1.9\boost\lib\libboost_system-vc110-mt-gd-1_55.lib;..\3rdParty\ogre_1.9\boost\lib\libboost_chrono-vc110-mt-gd-1_55.lib;..\3rdParty\ogre_1.9\lib\Debug\OgreRTShaderSystem_d.lib;..\3rdParty\ogre_1.9\lib\Debug\OgreTerrain_d.lib;..\3rdParty\ogre_1.9\lib\Debug\OgrePaging_d.lib;..\3rdParty\ogre_1.9\lib\Debug\OgreVolume_d.lib;..\3rdParty\ogre_1.9\lib\Debug\OgreOverlay_d.lib;..\3rdParty\ogre_1.9\lib\Debug\OIS_d.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
