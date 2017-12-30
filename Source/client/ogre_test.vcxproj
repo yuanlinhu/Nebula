@@ -58,9 +58,8 @@
     <Link>
       <SubSystem>NotSet</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;..\3rdParty\ogre_1.9\lib\Debug\OgreMain_d.lib;..\3rdParty\ogre_1.9\boost\lib\libboost_thread-vc110-mt-gd-1_55.lib;..\3rdParty\ogre_1.9\boost\lib\libboost_date_time-vc110-mt-gd-1_55.lib;..\3rdParty\ogre_1.9\boost\lib\libboost_system-vc110-mt-gd-1_55.lib;..\3rdParty\ogre_1.9\boost\lib\libboost_chrono-vc110-mt-gd-1_55.lib;..\3rdParty\ogre_1.9\lib\Debug\OgreRTShaderSystem_d.lib;..\3rdParty\ogre_1.9\lib\Debug\OgreTerrain_d.lib;..\3rdParty\ogre_1.9\lib\Debug\OgrePaging_d.lib;..\3rdParty\ogre_1.9\lib\Debug\OgreVolume_d.lib;..\3rdParty\ogre_1.9\lib\Debug\OgreOverlay_d.lib;..\3rdParty\ogre_1.9\lib\Debug\OIS_d.lib;event_core.lib;event_extra.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\Lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;..\3rdParty\ogre_1.9\lib\Debug\OgreMain_d.lib;..\3rdParty\ogre_1.9\boost\lib\libboost_thread-vc110-mt-gd-1_55.lib;..\3rdParty\ogre_1.9\boost\lib\libboost_date_time-vc110-mt-gd-1_55.lib;..\3rdParty\ogre_1.9\boost\lib\libboost_system-vc110-mt-gd-1_55.lib;..\3rdParty\ogre_1.9\boost\lib\libboost_chrono-vc110-mt-gd-1_55.lib;..\3rdParty\ogre_1.9\lib\Debug\OgreRTShaderSystem_d.lib;..\3rdParty\ogre_1.9\lib\Debug\OgreTerrain_d.lib;..\3rdParty\ogre_1.9\lib\Debug\OgrePaging_d.lib;..\3rdParty\ogre_1.9\lib\Debug\OgreVolume_d.lib;..\3rdParty\ogre_1.9\lib\Debug\OgreOverlay_d.lib;..\3rdParty\ogre_1.9\lib\Debug\OIS_d.lib;event_core.lib;event_extra.lib;ws2_32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

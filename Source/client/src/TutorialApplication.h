@@ -48,8 +48,10 @@ public:
     TutorialApplication(void);
     virtual ~TutorialApplication(void);
 
+public:
+	void init();
 protected:
-	virtual bool setup();
+	//virtual bool setup();
 
     virtual void createScene(void);
 	virtual void createCamera(void);

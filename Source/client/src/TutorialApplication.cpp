@@ -15,20 +15,40 @@ http://www.ogre3d.org/wiki/
 -----------------------------------------------------------------------------
 */
 
+
+#define WIN32_LEAN_AND_MEAN 
+#include <Windows.h>
+#include <winsock2.h>
+
+#ifndef _WINSOCKAPI_           // 没有包含winsock.h
+	#define _WINSOCKAPI_           // 避免再包含winsock.h
+
+	#ifndef _WINSOCK2API_      // 没有包含winsock2.h
+	#define _WINSOCK2API_      // 避免再包含winsock2.h
+	#include <winsock2.h>
+	#endif
+#endif
+
 #include "TutorialApplication.h"
 #include "Example25FrameListener.h"
-//#include "Example41.h"
-//#include "ShrewMouceManager.h"
 #include "EntityBaseManager.h"
 #include "EntityBase.h"
-
 #include "OgreMovableObject.h"
+
+
+
+
 
 using namespace Ogre;
 
 
 static void Hello() {
 	// 睡眠一秒以模拟数据处理。
+
+
+// 	event_base* new_event_base = event_base_new();
+// 
+// 	event_base_dispatch(new_event_base);
 
 	std::cout << "Hello, World!" << std::endl;
 }
@@ -88,18 +108,33 @@ void TutorialApplication::createManual(void)
 // 	node->attachObject(ent);
 }
 
-bool TutorialApplication::setup()
+void TutorialApplication::init()
 {
-	BaseApplication::setup();
+ 	WORD wVersionRequested;
+ 	WSADATA wsaData;
+ 	int err;
+ 
+ 	wVersionRequested = MAKEWORD( 2, 2 );
+ 
+ 	err = WSAStartup( wVersionRequested, &wsaData );
+ 	if ( err != 0 ) {
+ 		/* Tell the user that we could not find a usable */
+ 		/* WinSock DLL.                                  */
+ 		return;
+ 	}
 
 	boost::thread hello_thread(Hello);
 
-	return true;
+	
+
+	return ;
 }
 
 //---------------------------------------------------------------------------
 void TutorialApplication::createScene(void)
 {
+	init();
+
 	mEntityBaseManager = new EntityBaseManager(mSceneMgr);
 	mEntityBaseManager->loadEntity();
 
@@ -282,6 +317,7 @@ extern "C" {
 		//Example41 app;
 
         try {
+			app.init();
             app.go();
         } catch(Ogre::Exception& e)  {
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
