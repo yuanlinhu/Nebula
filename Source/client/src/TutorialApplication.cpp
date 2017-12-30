@@ -43,9 +43,11 @@ http://www.ogre3d.org/wiki/
 #include<event2/buffer.h>  
 #include<event2/util.h>  
 
-
+#include "address.pb.h"
+#include <iostream>
 
 using namespace Ogre;
+using namespace std;
 
 
 
@@ -82,6 +84,23 @@ void server_msg_cb(struct bufferevent* bev, void* arg)
 	printf("recv %s from server\n", msg);  
 }  
 
+void write_to_server(bufferevent *bev)
+{
+	tutorial::Person person;
+
+	person.set_name("flamingo32345 eewwsd ");     
+	person.set_id(1234565);     
+
+	cout<<person.name()<<endl;  
+	cout<<person.id()<<endl;  
+
+	std::string str;
+	person.SerializeToString(&str); // 将对象序列化到字符串，除此外还可以序列化到fstream等
+
+	bufferevent_write(bev, str.c_str(), str.size());
+
+}
+
 
 void event_cb(struct bufferevent *bev, short event, void *arg)  
 {  
@@ -93,6 +112,7 @@ void event_cb(struct bufferevent *bev, short event, void *arg)
 	else if( event & BEV_EVENT_CONNECTED)  
 	{  
 		printf("the client has connected to server\n");  
+		write_to_server(bev);
 		return ;  
 	}  
 
@@ -100,7 +120,11 @@ void event_cb(struct bufferevent *bev, short event, void *arg)
 	bufferevent_free(bev);  
 
 	struct event *ev = (struct event*)arg;  
-	event_free(ev);  
+	if(NULL != ev)
+	{
+		event_free(ev);  
+
+	}
 }  
 
 
