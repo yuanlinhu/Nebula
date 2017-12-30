@@ -67,9 +67,11 @@
   <ItemGroup>
     <ClCompile Include="..\..\server\game_server\address.pb.cc" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="protobuf_example.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\server\game_server\address.pb.h" />
+    <ClInclude Include="protobuf_example.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
