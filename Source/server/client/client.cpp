@@ -146,11 +146,14 @@ void Client::server_msg_cb(bufferevent* bev, void* args)
 
 void Client::hand_input(void* msg, int len)
 {
-	CommonMsg* common_msg = (CommonMsg*)msg;
+	//CommonMsg* common_msg = (CommonMsg*)msg;
 
-	cout<<"Client::hand_input common_msg->id: "<<common_msg->id<<endl;
-	cout<<"Client::hand_input common_msg->type: "<<common_msg->type<<endl;
-	cout<<"Client::hand_input common_msg->sub_type: "<<common_msg->sub_type<<endl;
+
+	//cout<<"Client::hand_input common_msg->id: "<<common_msg->id<<endl;
+	//cout<<"Client::hand_input common_msg->type: "<<common_msg->type<<endl;
+	//cout<<"Client::hand_input common_msg->sub_type: "<<common_msg->sub_type<<endl;
+	string str((char*)msg, len);
+	cout << "收到信息:[" << str << "]" << endl;
 }
 
 void Client::test()
