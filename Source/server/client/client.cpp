@@ -2,13 +2,13 @@
 #include "client.h"
 
 #include <iostream>
+#include <Ws2tcpip.h>
 
-#include<sys/types.h>  
-#include<sys/socket.h>  
-#include<netinet/in.h>  
-#include<arpa/inet.h>  
+//#include<sys/types.h>  
+ 
 #include<errno.h>  
-#include<unistd.h>  
+
+
 
 #include<stdio.h>  
 #include<string.h>  
@@ -39,8 +39,22 @@ Client::Client()
 
 }
 
-void Client::init(std::string& ip, int port, int client_id)
+void Client::init_command()
 {
+	//m_ev_cmd = event_new(m_base, STDIN_FILENO, EV_READ | EV_PERSIST, cmd_msg_cb, (void*)this);
+	event_add(m_ev_cmd, NULL);
+}
+
+void Client::init(std::string ip, int port, int client_id)
+{
+
+	WORD sockVersion = MAKEWORD(2, 2);         //请求2.2版本的WinSock库
+											   // 用于接收Wjndows Socket的结构信息
+	WSADATA wsaData;
+	if (WSAStartup(sockVersion, &wsaData) != 0) {
+		return;
+	}
+
 	cout<<"Client::init ip:["<<ip<<"]"<<endl;
 	cout<<"Client::init port:["<<port<<"]"<<endl;
 	cout<<"Client::init client_id:["<<client_id<<"]"<<endl;
@@ -48,7 +62,7 @@ void Client::init(std::string& ip, int port, int client_id)
 	m_port = port;
 	m_client_id = client_id;
 
-	event_base* m_base = event_base_new();
+	m_base = event_base_new();
 	if(NULL == m_base)
 	{
 		cout<<"Client::init m_base = "<<m_base<<endl;
@@ -56,21 +70,26 @@ void Client::init(std::string& ip, int port, int client_id)
 
 	m_bev = bufferevent_socket_new(m_base, -1, BEV_OPT_CLOSE_ON_FREE);
 
-	m_ev_cmd = event_new(m_base, STDIN_FILENO, EV_READ | EV_PERSIST, cmd_msg_cb, (void*)this);
 
-	event_add(m_ev_cmd, NULL);
 
 	sockaddr_in server_addr;
 	memset(&server_addr, 0, sizeof(server_addr));
 
 	server_addr.sin_family = AF_INET;
-	server_addr.sin_port = (m_port);
-	inet_aton(m_ip.c_str(), &server_addr.sin_addr);
+	server_addr.sin_port = htons(m_port);
+	inet_pton(AF_INET, ip.c_str(), &server_addr.sin_addr);
 
-	bufferevent_socket_connect(m_bev, (sockaddr*)&server_addr, sizeof(server_addr));
+	int sock_fd = 0;
+	//do 
+	//{
+		sock_fd = bufferevent_socket_connect(m_bev, (sockaddr*)&server_addr, sizeof(server_addr));
+	//} while (sock_fd == 0);
+
 
 	bufferevent_setcb(m_bev, server_msg_cb, NULL, event_cb, (void*)this);
 	bufferevent_enable(m_bev, EV_READ | EV_PERSIST);
+
+
 
 	event_base_dispatch(m_base);
 }
@@ -84,7 +103,7 @@ void Client::cmd_msg_cb(int fd, short events, void* args)
 {
 	char msg[1024] = {0};
 
-	int ret = read(fd, msg, sizeof(msg));
+	int ret = ::recv(fd, msg, sizeof(msg), 0);
 	if(ret < 0)
 	{
 		cout<<"cmd_msg_cb read error"<<endl;
@@ -128,8 +147,16 @@ void Client::hand_input(void* msg, int len)
 	cout<<"Client::hand_input common_msg->sub_type: "<<common_msg->sub_type<<endl;
 }
 
+void Client::test()
+{
+	Client client;
+	//client.init("192.168.1.71", 11111,1);
+	client.init("127.0.0.1", 11111, 1);
+}
+
 void Client::event_cb(bufferevent* bev, short events, void* args)
 {
+	int error = WSAGetLastError();
 	if(events & BEV_EVENT_EOF)
 	{
 		cout<<"connection closed "<<endl;
@@ -137,6 +164,7 @@ void Client::event_cb(bufferevent* bev, short events, void* args)
 	else if(events & BEV_EVENT_ERROR)
 	{
 		cout<<"some other error events = "<<events<<endl;
+		return;
 	}
 	else if(events & BEV_EVENT_CONNECTED)
 	{
@@ -146,8 +174,8 @@ void Client::event_cb(bufferevent* bev, short events, void* args)
 
 	bufferevent_free(bev);
 
-	event* ev = (event*)args;
-	event_free(ev);
+	//Client* ev = (Client*)args;
+	//event_free(ev);
 	return;
 }
 

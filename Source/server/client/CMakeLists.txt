@@ -13,9 +13,12 @@ include_directories(./)
 include_directories(/usr/local/include)
 include_directories(/usr/local/lib)
 include_directories(../common)
+include_directories(..\..\3rdParty\libevent\include)
+include_directories(..\..\3rdParty\libevent\build\include)
+
 
 add_definitions(-g)
 
 
 target_link_libraries(client -levent)
-target_link_libraries(client libserver_common.a)
+#target_link_libraries(client libserver_common.a)

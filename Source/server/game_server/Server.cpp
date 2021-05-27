@@ -15,6 +15,8 @@ Server::~Server()
 
 void Server::init(int port)
 {
+	cout << "server start port: " << m_port << endl;
+
 	WORD sockVersion = MAKEWORD(2, 2);         //请求2.2版本的WinSock库
 											   // 用于接收Wjndows Socket的结构信息
 	WSADATA wsaData;
@@ -22,12 +24,15 @@ void Server::init(int port)
 		return ;
 	}
 
+	m_base = event_base_new();
+
 	m_port = port;
 	
 	memset(&m_sin, 0, sizeof(m_sin));
 	m_sin.sin_family = AF_INET;
-	m_sin.sin_addr.s_addr = htonl(0);
+	//m_sin.sin_addr.s_addr = htonl(0);
 	m_sin.sin_port = htons(m_port);
+	m_sin.sin_addr.s_addr = INADDR_ANY;
 
 
 	m_listener = evconnlistener_new_bind(m_base, Server::accept_conn_cb, this,
@@ -39,11 +44,15 @@ void Server::init(int port)
 		return;
 	}
 	evconnlistener_set_error_cb(m_listener, Server::accept_error_cb);
+
+
+
+	cout << "server started success~~~~!! port: " << m_port << endl;
 }
 
 void Server::accept_conn_cb(struct evconnlistener *listener, evutil_socket_t fd, struct sockaddr *address, int socklen, void *ctx)
 {
-	cout << "accept_error_cb" << endl;
+	cout << "accept_conn_cb" << endl;
 }
 
 void Server::accept_error_cb(struct evconnlistener *listener, void *ctx)
@@ -54,7 +63,7 @@ void Server::accept_error_cb(struct evconnlistener *listener, void *ctx)
 void Server::test()
 {
 	Server server;
-	server.init(1111);
+	server.init(11111);
 	server.run();
 }
 
