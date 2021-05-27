@@ -11,10 +11,11 @@
 #include <event2/listener.h>  
 #include <event2/util.h>  
 #include <event2/event.h> 
+#include "Server.h"
 
-#include <boost/thread.hpp>
+//#include <boost/thread.hpp>
 
-#include "address.pb.h"
+//#include "address.pb.h"
 
 using namespace std;
 
@@ -38,10 +39,10 @@ echo_read_cb(struct bufferevent *bev, void *ctx)
 
 		std::string recvString = msg;
 
-		tutorial::Person person;
-		person.ParseFromString(recvString);
+		//tutorial::Person person;
+		//person.ParseFromString(recvString);
 
-		printf("msg: <<id:[%d], name:[%s] \n", person.id(), person.name().c_str());
+//		printf("msg: <<id:[%d], name:[%s] \n", person.id(), person.name().c_str());
 
         /* Copy all the data from the input buffer to the output buffer. */
         //evbuffer_add_buffer(output, input);
@@ -89,6 +90,9 @@ accept_error_cb(struct evconnlistener *listener, void *ctx)
 int
 main(int argc, char **argv)
 {
+
+	Server::test();
+	return 0;
 	WORD sockVersion = MAKEWORD(2,2);         //请求2.2版本的WinSock库
 	// 用于接收Wjndows Socket的结构信息
 	WSADATA wsaData;                         
