@@ -18,6 +18,7 @@ public:
 	Client();
 	void init(std::string ip, int port, int client_id);
 	void init_command();
+	void run();
 
 
     bufferevent* get_bev();
@@ -38,13 +39,15 @@ public:
 	static void event_cb(bufferevent* bev, short events, void* args);
 
 private:
-	event_base* m_base = nullptr;
 	std::string m_ip;
 	int m_port;
 	int m_client_id;
 
+	event_base* m_base = nullptr;
     bufferevent* m_bev = nullptr;
-    event* m_ev_cmd;
+    event* m_ev_cmd = nullptr;
+	
+	int m_sock_fd = 0;
 };
 
 

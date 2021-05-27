@@ -9,7 +9,6 @@
 #include<errno.h>  
 
 
-
 #include<stdio.h>  
 #include<string.h>  
 #include<stdlib.h>  
@@ -41,8 +40,12 @@ Client::Client()
 
 void Client::init_command()
 {
-	//m_ev_cmd = event_new(m_base, STDIN_FILENO, EV_READ | EV_PERSIST, cmd_msg_cb, (void*)this);
-	event_add(m_ev_cmd, NULL);
+	//intptr_t h = (intptr_t)GetConsoleWindow();
+	//m_ev_cmd = event_new(m_base, h, EV_READ | EV_PERSIST, cmd_msg_cb, (void*)this);
+
+	//_fileno(stdin);
+	//m_ev_cmd = event_new(m_base, _fileno(stdin), EV_READ | EV_PERSIST, cmd_msg_cb, (void*)this);
+	//event_add(m_ev_cmd, NULL);
 }
 
 void Client::init(std::string ip, int port, int client_id)
@@ -80,10 +83,7 @@ void Client::init(std::string ip, int port, int client_id)
 	inet_pton(AF_INET, ip.c_str(), &server_addr.sin_addr);
 
 	int sock_fd = 0;
-	//do 
-	//{
-		sock_fd = bufferevent_socket_connect(m_bev, (sockaddr*)&server_addr, sizeof(server_addr));
-	//} while (sock_fd == 0);
+	m_sock_fd = bufferevent_socket_connect(m_bev, (sockaddr*)&server_addr, sizeof(server_addr));
 
 
 	bufferevent_setcb(m_bev, server_msg_cb, NULL, event_cb, (void*)this);
@@ -91,6 +91,11 @@ void Client::init(std::string ip, int port, int client_id)
 
 
 
+	
+}
+
+void Client::run()
+{
 	event_base_dispatch(m_base);
 }
 
@@ -150,8 +155,9 @@ void Client::hand_input(void* msg, int len)
 void Client::test()
 {
 	Client client;
-	//client.init("192.168.1.71", 11111,1);
-	client.init("127.0.0.1", 11111, 1);
+	client.init("192.168.1.71", 11111,1);
+	client.init_command();
+	client.run();
 }
 
 void Client::event_cb(bufferevent* bev, short events, void* args)
