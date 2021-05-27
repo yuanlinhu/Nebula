@@ -26,7 +26,7 @@ public:
     int get_client_id();
 
 public:
-	int tcp_connect_server(std::string server_ip, int port);
+	//int tcp_connect_server(std::string server_ip, int port);
 
 
 	void hand_input(void* msg, int len);

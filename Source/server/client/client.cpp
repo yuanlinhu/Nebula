@@ -17,6 +17,7 @@
 #include<event2/bufferevent.h>  
 #include<event2/buffer.h>  
 #include<event2/util.h>  
+#include <event2/thread.h>
 
 using namespace std;
 
@@ -57,6 +58,8 @@ void Client::init(std::string ip, int port, int client_id)
 	if (WSAStartup(sockVersion, &wsaData) != 0) {
 		return;
 	}
+
+	//evthread_use_windows_threads();
 
 	cout<<"Client::init ip:["<<ip<<"]"<<endl;
 	cout<<"Client::init port:["<<port<<"]"<<endl;
@@ -99,10 +102,10 @@ void Client::run()
 	event_base_dispatch(m_base);
 }
 
-int Client::tcp_connect_server(std::string server_ip, int port)
-{
-	return 0;
-}
+//int Client::tcp_connect_server(std::string server_ip, int port)
+//{
+//	return 0;
+//}
 
 void Client::cmd_msg_cb(int fd, short events, void* args)
 {
@@ -139,8 +142,6 @@ void Client::server_msg_cb(bufferevent* bev, void* args)
 
 	Client* client = (Client*)args;
 	client->hand_input(msg, len);
-
-
 }
 
 void Client::hand_input(void* msg, int len)
@@ -156,7 +157,7 @@ void Client::test()
 {
 	Client client;
 	client.init("192.168.1.71", 11111,1);
-	client.init_command();
+	//client.init_command();
 	client.run();
 }
 
