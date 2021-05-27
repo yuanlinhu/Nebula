@@ -6,6 +6,7 @@
 #include <event2/bufferevent.h>
 #include "ClientConnection.h"
 
+
 using namespace std;
 
 Server::Server()
@@ -54,6 +55,24 @@ void Server::init(int port)
 	cout << "server started success~~~~!! port: " << m_port << endl;
 }
 
+void on_timer_cb(int fd, short event, void *arg)
+{
+	Server* server = (Server*)arg;
+	server->handle_timer(fd, event);
+}
+
+
+void Server::init_timer()
+{
+	timeval tv;
+
+	tv.tv_sec = 3;
+	tv.tv_usec = 0;
+	//m_event_timer = evtimer_new(m_base, on_timer_cb, this);
+	m_event_timer = event_new(m_base, -1, EV_PERSIST, on_timer_cb, this);
+	evtimer_add(m_event_timer, &tv);
+}
+
 void Server::accept_conn_cb(struct evconnlistener *listener, evutil_socket_t fd, struct sockaddr *address, int socklen, void *ctx)
 {
 	cout << "accept_conn_cb" << endl;
@@ -71,6 +90,7 @@ void Server::test()
 {
 	Server server;
 	server.init(11111);
+	server.init_timer();
 	server.run();
 }
 
@@ -140,4 +160,9 @@ void Server::handle_accept(evutil_socket_t fd, struct sockaddr *address, int soc
 
 	char reply[] = "hello client";
 	bufferevent_write(new_bev, reply, strlen(reply));
+}
+
+void Server::handle_timer(int fd, short event)
+{
+	cout << "handle_timer fd: ¡¾" << fd << "¡¿" << endl;
 }

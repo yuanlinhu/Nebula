@@ -3,6 +3,7 @@
 #include <WinSock2.h>
 #include <event2/util.h>
 #include <map>
+#include <event2/event.h>
 
 using namespace std;
 
@@ -12,6 +13,7 @@ class event_base;
 class evconnlistener;
 class ClientConnection;
 class bufferevent;
+struct event;
 
 class Server
 {
@@ -21,13 +23,14 @@ public:
 
 
 	void init(int port);
+	void init_timer();
 	void run();
 
 	void handle_close(bufferevent *bev);
 	void handle_accept(evutil_socket_t fd, struct sockaddr *address, int socklen);
+	void handle_timer(int fd, short event);
 
 
-	
 	static void	accept_conn_cb(struct evconnlistener *listener, evutil_socket_t fd, struct sockaddr *address, int socklen, void *ctx);
 	static void accept_error_cb(struct evconnlistener *listener, void *ctx);
 		
@@ -45,7 +48,7 @@ private:
 	event_base *m_base = nullptr;
 	evconnlistener* m_listener = nullptr;
 	sockaddr_in m_sin;
-
+	event* m_event_timer = nullptr;
 
 	std::map<int, ClientConnection*>	m_client_list;
 };
