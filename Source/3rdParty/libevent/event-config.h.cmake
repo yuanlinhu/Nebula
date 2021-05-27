@@ -75,11 +75,8 @@
 /* Define to 1 if you have the declaration of `KERN_ARND'. */
 #define EVENT__HAVE_DECL_KERN_ARND @EVENT__HAVE_DECL_KERN_ARND@
 
-/* Define to 1 if you have the declaration of `KERN_RANDOM'. */
-#define EVENT__HAVE_DECL_KERN_RANDOM @EVENT__HAVE_DECL_KERN_RANDOM@
-
-/* Define to 1 if you have the declaration of `RANDOM_UUID'. */
-#define EVENT__HAVE_DECL_RANDOM_UUID @EVENT__HAVE_DECL_RANDOM_UUID@
+/* Define to 1 if you have `getrandom' function. */
+#cmakedefine EVENT__HAVE_GETRANDOM 1
 
 /* Define if /dev/poll is available */
 #cmakedefine EVENT__HAVE_DEVPOLL 1
@@ -104,6 +101,9 @@
 
 /* Define to 1 if you have the `epoll_ctl' function. */
 #cmakedefine EVENT__HAVE_EPOLL_CTL 1
+
+/* Define if your system supports the wepoll module */
+#cmakedefine EVENT__HAVE_WEPOLL 1
 
 /* Define to 1 if you have the `eventfd' function. */
 #cmakedefine EVENT__HAVE_EVENTFD 1
@@ -181,6 +181,9 @@
 /* Define to 1 if you have the <mach/mach_time.h> header file. */
 #cmakedefine EVENT__HAVE_MACH_MACH_TIME_H 1
 
+/* Define to 1 if you have the <mach/mach.h> header file. */
+#cmakedefine EVENT__HAVE_MACH_MACH_H 1
+
 /* Define to 1 if you have the <memory.h> header file. */
 #cmakedefine EVENT__HAVE_MEMORY_H 1
 
@@ -202,8 +205,17 @@
 /* Define to 1 if you have the <netinet/tcp.h> header file. */
 #cmakedefine EVENT__HAVE_NETINET_TCP_H 1
 
+/* Define to 1 if you have the <sys/un.h> header file. */
+#cmakedefine EVENT__HAVE_SYS_UN_H 1
+
+/* Define to 1 if you have the <afunix.h> header file. */
+#cmakedefine EVENT__HAVE_AFUNIX_H 1
+
 /* Define if the system has openssl */
 #cmakedefine EVENT__HAVE_OPENSSL 1
+
+/* Define if the system has mbedtls */
+#cmakedefine EVENT__HAVE_MBEDTLS 1
 
 /* Define to 1 if you have the `pipe' function. */
 #cmakedefine EVENT__HAVE_PIPE 1
@@ -225,6 +237,9 @@
 
 /* Define if we have pthreads on this system */
 #cmakedefine EVENT__HAVE_PTHREADS 1
+
+/* Define to 1 if you have the `pthread_mutexattr_setprotocol' function. */
+#cmakedefine EVENT__HAVE_PTHREAD_MUTEXATTR_SETPROTOCOL 1
 
 /* Define to 1 if you have the `putenv' function. */
 #cmakedefine EVENT__HAVE_PUTENV 1
@@ -253,8 +268,8 @@
 /* Define to 1 if you have the `signal' function. */
 #cmakedefine EVENT__HAVE_SIGNAL 1
 
-/* Define to 1 if you have the `splice' function. */
-#cmakedefine EVENT__HAVE_SPLICE 1
+/* Define to 1 if you have the `strsignal' function. */
+#cmakedefine EVENT__HAVE_STRSIGNAL 1
 
 /* Define to 1 if you have the <stdarg.h> header file. */
 #cmakedefine EVENT__HAVE_STDARG_H 1
@@ -267,9 +282,6 @@
 
 /* Define to 1 if you have the <stdlib.h> header file. */
 #cmakedefine EVENT__HAVE_STDLIB_H 1
-
-/* Define to 1 if you have the <strings.h> header file. */
-#cmakedefine EVENT__HAVE_STRINGS_H 1
 
 /* Define to 1 if you have the <string.h> header file. */
 #cmakedefine EVENT__HAVE_STRING_H 1
@@ -285,6 +297,12 @@
 
 /* Define to 1 if you have the `strtoll' function. */
 #cmakedefine EVENT__HAVE_STRTOLL 1
+
+/* Define to 1 if you have the `_gmtime64_s' function. */
+#cmakedefine EVENT__HAVE__GMTIME64_S 1
+
+/* Define to 1 if you have the `_gmtime64' function. */
+#cmakedefine EVENT__HAVE__GMTIME64 1
 
 /* Define to 1 if the system has the type `struct addrinfo'. */
 #cmakedefine EVENT__HAVE_STRUCT_ADDRINFO 1
@@ -307,6 +325,9 @@
 /* Define to 1 if `sin_len' is member of `struct sockaddr_in'. */
 #cmakedefine EVENT__HAVE_STRUCT_SOCKADDR_IN_SIN_LEN 1
 
+/* Define to 1 if the system has the type `struct sockaddr_un'. */
+#cmakedefine EVENT__HAVE_STRUCT_SOCKADDR_UN 1
+
 /* Define to 1 if the system has the type `struct sockaddr_storage'. */
 #cmakedefine EVENT__HAVE_STRUCT_SOCKADDR_STORAGE 1
 
@@ -321,9 +342,6 @@
 
 /* Define to 1 if you have the `sysctl' function. */
 #cmakedefine EVENT__HAVE_SYSCTL 1
-
-/* Define to 1 if you have the <sys/devpoll.h> header file. */
-#cmakedefine EVENT__HAVE_SYS_DEVPOLL_H 1
 
 /* Define to 1 if you have the <sys/epoll.h> header file. */
 #cmakedefine EVENT__HAVE_SYS_EPOLL_H 1
@@ -360,6 +378,9 @@
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #cmakedefine EVENT__HAVE_SYS_STAT_H 1
+
+/* Define to 1 if you have the <sys/random.h> header file. */
+#cmakedefine EVENT__HAVE_SYS_RANDOM_H 1
 
 /* Define to 1 if you have the <sys/sysctl.h> header file. */
 #cmakedefine EVENT__HAVE_SYS_SYSCTL_H 1
@@ -425,9 +446,6 @@
 /* Define to 1 if you have the `unsetenv' function. */
 #cmakedefine EVENT__HAVE_UNSETENV 1
 
-/* Define to 1 if you have the `vasprintf' function. */
-#cmakedefine EVENT__HAVE_VASPRINTF 1
-
 /* Define if kqueue works correctly with pipes */
 #cmakedefine EVENT__HAVE_WORKING_KQUEUE 1
 
@@ -461,9 +479,6 @@
 /* The size of `size_t', as computed by sizeof. */
 #define EVENT__SIZEOF_SIZE_T @EVENT__SIZEOF_SIZE_T@
 
-/* Define to 1 if you have the ANSI C header files. */
-#cmakedefine EVENT__STDC_HEADERS 1
-
 /* Define to 1 if you can safely include both <sys/time.h> and <time.h>. */
 #cmakedefine EVENT__TIME_WITH_SYS_TIME 1
 
@@ -472,16 +487,6 @@
 
 /* The size of 'void *', as computer by sizeof */
 #define EVENT__SIZEOF_VOID_P @EVENT__SIZEOF_VOID_P@
-
-/* set an alias for whatever __func__ __FUNCTION__ is, what sillyness */
-#if defined (__func__)
-#define EVENT____func__ __func__
-#elif defined(__FUNCTION__)
-#define EVENT____func__  __FUNCTION__
-#else
-#define EVENT____func__ __FILE__
-#endif
-
 
 /* Define to `__inline__' or `__inline' if that's what the C compiler
    calls it, or to nothing if 'inline' is not supported under any name.  */
@@ -499,8 +504,8 @@
 #define EVENT__inline @EVENT__inline@
 #endif
 
-/* Define to `int' if <sys/tyes.h> does not define. */
-#define EVENT__pid_t @EVENT__pid_t@
+#cmakedefine EVENT__HAVE___func__ 1
+#cmakedefine EVENT__HAVE___FUNCTION__ 1
 
 /* Define to `unsigned' if <sys/types.h> does not define. */
 #define EVENT__size_t @EVENT__size_t@

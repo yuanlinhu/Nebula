@@ -51,32 +51,35 @@ TESTS = \
 	test_runner_devpoll \
 	test_runner_poll \
 	test_runner_win32 \
+	test_runner_wepoll \
 	test_runner_timerfd \
 	test_runner_changelist \
 	test_runner_timerfd_changelist
 LOG_COMPILER = true
 TESTS_COMPILER = true
 
-test_runner_epoll: test/test.sh
-	test/test.sh -b EPOLL
-test_runner_select: test/test.sh
-	test/test.sh -b SELECT
-test_runner_kqueue: test/test.sh
-	test/test.sh -b KQUEUE
-test_runner_evport: test/test.sh
-	test/test.sh -b EVPORT
-test_runner_devpoll: test/test.sh
-	test/test.sh -b DEVPOLL
-test_runner_poll: test/test.sh
-	test/test.sh -b POLL
-test_runner_win32: test/test.sh
-	test/test.sh -b WIN32
-test_runner_timerfd: test/test.sh
-	test/test.sh -b "" -t
-test_runner_changelist: test/test.sh
-	test/test.sh -b "" -c
-test_runner_timerfd_changelist: test/test.sh
-	test/test.sh -b "" -T
+test_runner_epoll: $(top_srcdir)/test/test.sh
+	$(top_srcdir)/test/test.sh -b EPOLL
+test_runner_select: $(top_srcdir)/test/test.sh
+	$(top_srcdir)/test/test.sh -b SELECT
+test_runner_kqueue: $(top_srcdir)/test/test.sh
+	$(top_srcdir)/test/test.sh -b KQUEUE
+test_runner_evport: $(top_srcdir)/test/test.sh
+	$(top_srcdir)/test/test.sh -b EVPORT
+test_runner_devpoll: $(top_srcdir)/test/test.sh
+	$(top_srcdir)/test/test.sh -b DEVPOLL
+test_runner_poll: $(top_srcdir)/test/test.sh
+	$(top_srcdir)/test/test.sh -b POLL
+test_runner_win32: $(top_srcdir)/test/test.sh
+	$(top_srcdir)/test/test.sh -b WIN32
+test_runner_wepoll: $(top_srcdir)/test/test.sh
+	$(top_srcdir)/test/test.sh -b WEPOLL
+test_runner_timerfd: $(top_srcdir)/test/test.sh
+	$(top_srcdir)/test/test.sh -b "" -t
+test_runner_changelist: $(top_srcdir)/test/test.sh
+	$(top_srcdir)/test/test.sh -b "" -c
+test_runner_timerfd_changelist: $(top_srcdir)/test/test.sh
+	$(top_srcdir)/test/test.sh -b "" -T
 
 DISTCLEANFILES += test/regress.gen.c test/regress.gen.h
 
@@ -120,6 +123,7 @@ test_regress_SOURCES = 				\
 	test/regress_testutils.c			\
 	test/regress_testutils.h			\
 	test/regress_util.c				\
+	test/regress_watch.c				\
 	test/tinytest.c				\
 	$(regress_thread_SOURCES)		\
 	$(regress_zlib_SOURCES)
@@ -140,14 +144,20 @@ if BUILD_WIN32
 test_regress_SOURCES += test/regress_iocp.c
 endif
 
-test_regress_LDADD = $(LIBEVENT_GC_SECTIONS) libevent.la $(PTHREAD_LIBS) $(ZLIB_LIBS)
+test_regress_LDADD = $(LIBEVENT_GC_SECTIONS) libevent_core.la libevent_extra.la $(PTHREAD_LIBS) $(ZLIB_LIBS)
 test_regress_CPPFLAGS = $(AM_CPPFLAGS) $(PTHREAD_CFLAGS) $(ZLIB_CFLAGS) -Itest
 test_regress_LDFLAGS = $(PTHREAD_CFLAGS)
 
 if OPENSSL
-test_regress_SOURCES += test/regress_ssl.c
+test_regress_SOURCES += test/regress_openssl.c
 test_regress_CPPFLAGS += $(OPENSSL_INCS)
 test_regress_LDADD += libevent_openssl.la $(OPENSSL_LIBS) ${OPENSSL_LIBADD}
+endif
+
+if MBEDTLS
+test_regress_SOURCES += test/regress_mbedtls.c
+test_regress_CPPFLAGS += $(MBEDTLS_INCS)
+test_regress_LDADD += libevent_mbedtls.la $(MBEDTLS_LIBS)
 endif
 
 test_bench_SOURCES = test/bench.c

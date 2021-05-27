@@ -1,6 +1,6 @@
 #!/bin/sh
 
-BACKENDS="EVPORT KQUEUE EPOLL DEVPOLL POLL SELECT WIN32"
+BACKENDS="EVPORT KQUEUE EPOLL DEVPOLL POLL SELECT WIN32 WEPOLL"
 TESTS="test-eof test-closed test-weof test-time test-changelist test-fdleak"
 FAILED=no
 TEST_OUTPUT_FILE=${TEST_OUTPUT_FILE:-/dev/null}
@@ -82,8 +82,8 @@ run_tests () {
 		fi
 	done
 	announce_n " test-dumpevents: "
-	if python2 -c 'import sys; assert(sys.version_info >= (2, 4))' 2>/dev/null && test -f $TEST_SRC_DIR/check-dumpevents.py; then
-	    if $TEST_DIR/test-dumpevents | python2 $TEST_SRC_DIR/check-dumpevents.py >> "$TEST_OUTPUT_FILE" ;
+	if python -c 'import sys; assert(sys.version_info >= (2, 4))' 2>/dev/null && test -f $TEST_SRC_DIR/check-dumpevents.py; then
+	    if $TEST_DIR/test-dumpevents | $TEST_SRC_DIR/check-dumpevents.py >> "$TEST_OUTPUT_FILE" ;
 	    then
 	        announce OKAY ;
 	    else

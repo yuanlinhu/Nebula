@@ -33,32 +33,36 @@
     defined(event_extra_shared_EXPORTS) || \
     defined(event_core_shared_EXPORTS) || \
     defined(event_pthreads_shared_EXPORTS) || \
-    defined(event_openssl_shared_EXPORTS)
+    defined(event_openssl_shared_EXPORTS) || \
+    defined(event_mbedtls_shared_EXPORTS)
 
 # if defined (__SUNPRO_C) && (__SUNPRO_C >= 0x550)
 #  define EVENT2_EXPORT_SYMBOL __global
 # elif defined __GNUC__
 #  define EVENT2_EXPORT_SYMBOL __attribute__ ((visibility("default")))
 # elif defined(_MSC_VER)
-#  define EVENT2_EXPORT_SYMBOL extern __declspec(dllexport)
+#  define EVENT2_EXPORT_SYMBOL __declspec(dllexport)
 # else
 #  define EVENT2_EXPORT_SYMBOL /* unknown compiler */
 # endif
 
 #else /* event_*_EXPORTS */
 
-# if defined(_MSC_VER)
-#  define EVENT2_EXPORT_SYMBOL extern __declspec(dllimport)
-# else
-#  define EVENT2_EXPORT_SYMBOL
-# endif
+# define EVENT2_EXPORT_SYMBOL
 
 #endif /* event_*_EXPORTS */
 
+/** We need to dllimport event_debug_logging_mask_ into event_extra */
 #if defined(_MSC_VER)
-# define EVENT2_EXPORT_SYMBOL_DECL __declspec(dllimport)
-#else
-# define EVENT2_EXPORT_SYMBOL_DECL extern
+# if defined(event_core_shared_EXPORTS) /** from core export */
+#  define EVENT2_CORE_EXPORT_SYMBOL __declspec(dllexport)
+# elif defined(event_extra_shared_EXPORTS) || /** from extra import */ \
+       defined(EVENT_VISIBILITY_WANT_DLLIMPORT)
+#  define EVENT2_CORE_EXPORT_SYMBOL __declspec(dllimport)
+# endif
+#endif /* _MSC_VER */
+#if !defined(EVENT2_CORE_EXPORT_SYMBOL)
+# define EVENT2_CORE_EXPORT_SYMBOL EVENT2_EXPORT_SYMBOL
 #endif
 
 #endif /* EVENT2_VISIBILITY_H_INCLUDED_ */

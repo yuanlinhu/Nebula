@@ -27,15 +27,17 @@
 #ifndef EVENT2_RPC_H_INCLUDED_
 #define EVENT2_RPC_H_INCLUDED_
 
+/* For int types. */
+#include <event2/util.h>
 #include <event2/visibility.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/** @file rpc.h
+/** @file event2/rpc.h
  *
- * This header files provides basic support for an RPC server and client.
+ * @brief This header files provides basic support for an RPC server and client.
  *
  * To support RPCs in a server, every supported RPC command needs to be
  * defined and registered.
@@ -168,7 +170,7 @@ struct evrpc_hook_meta;
  *
  * @param rpcname the name of the RPC
  * @param reqstruct the name of the RPC request structure
- * @param replystruct the name of the RPC reply structure
+ * @param rplystruct the name of the RPC reply structure
  * @see EVRPC_GENERATE()
  */
 #define EVRPC_HEADER(rpcname, reqstruct, rplystruct) \
@@ -207,7 +209,7 @@ struct evrpc_request_wrapper *evrpc_make_request_ctx(
  *
  * @param rpcname the name of the RPC
  * @param reqstruct the name of the RPC request structure
- * @param replystruct the name of the RPC reply structure
+ * @param rplystruct the name of the RPC reply structure
  * @param pool the evrpc_pool over which to make the request
  * @param request a pointer to the RPC request structure object
  * @param reply a pointer to the RPC reply structure object
@@ -231,7 +233,7 @@ struct evrpc_request_wrapper *evrpc_make_request_ctx(
  *
  * @param rpcname the name of the RPC
  * @param reqstruct the name of the RPC request structure
- * @param replystruct the name of the RPC reply structure
+ * @param rplystruct the name of the RPC reply structure
  * @see EVRPC_HEADER()
  */
 #define EVRPC_GENERATE(rpcname, reqstruct, rplystruct)			\
@@ -292,7 +294,7 @@ struct evhttp;
 /** Creates a new rpc base from which RPC requests can be received
  *
  * @param server a pointer to an existing HTTP server
- * @return a newly allocated evrpc_base struct
+ * @return a newly allocated evrpc_base struct or NULL if an error occurred
  * @see evrpc_free()
  */
 EVENT2_EXPORT_SYMBOL
@@ -328,10 +330,10 @@ void evrpc_free(struct evrpc_base *base);
 #define EVRPC_REGISTER(base, name, request, reply, callback, cbarg)	\
 	evrpc_register_generic(base, #name,				\
 	    (void (*)(struct evrpc_req_generic *, void *))callback, cbarg, \
-	    (void *(*)(void *))request##_new, NULL,			\
+	    (void *(*)(void *))request##_new_with_arg, NULL,		\
 	    (void (*)(void *))request##_free,				\
 	    (int (*)(void *, struct evbuffer *))request##_unmarshal,	\
-	    (void *(*)(void *))reply##_new, NULL,			\
+	    (void *(*)(void *))reply##_new_with_arg, NULL,		\
 	    (void (*)(void *))reply##_free, \
 	    (int (*)(void *))reply##_complete, \
 	    (void (*)(struct evbuffer *, void *))reply##_marshal)
@@ -406,7 +408,8 @@ int evrpc_make_request(struct evrpc_request_wrapper *ctx);
  *
  * @param base a pointer to an struct event_based object; can be left NULL
  *   in singled-threaded applications
- * @return a newly allocated struct evrpc_pool object
+ * @return a newly allocated struct evrpc_pool object or NULL if an error
+ *   occurred
  * @see evrpc_pool_free()
  */
 EVENT2_EXPORT_SYMBOL
@@ -566,7 +569,8 @@ int evrpc_hook_find_meta(void *ctx, const char *key,
  * returns the connection object associated with the request
  *
  * @param ctx the context provided to the hook call
- * @return a pointer to the evhttp_connection object
+ * @return a pointer to the evhttp_connection object or NULL if an error
+ *   occurred
  */
 EVENT2_EXPORT_SYMBOL
 struct evhttp_connection *evrpc_hook_get_connection(void *ctx);
