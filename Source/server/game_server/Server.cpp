@@ -5,6 +5,7 @@
 #include <event2/event.h>
 #include <event2/bufferevent.h>
 #include "ClientConnection.h"
+#include <WinSock2.h>
 
 
 using namespace std;
@@ -141,7 +142,7 @@ void Server::handle_close(bufferevent *bev)
 }
 
 
-void Server::handle_accept(evutil_socket_t fd, struct sockaddr *address, int socklen)
+void Server::handle_accept(evutil_socket_t fd, sockaddr *address, int socklen)
 {
 	auto iter = m_client_list.find(fd);
 	if (iter != m_client_list.end())
@@ -153,16 +154,25 @@ void Server::handle_accept(evutil_socket_t fd, struct sockaddr *address, int soc
 	bufferevent_setcb(new_bev, Server::socket_read_cb, NULL, Server::socket_event_cb, this);
 	bufferevent_enable(new_bev, EV_READ | EV_PERSIST);
 
-	ClientConnection* new_client = new ClientConnection();
+	ClientConnection* new_client = new ClientConnection(new_bev);
 	new_client->init(fd, address, socklen);
 	m_client_list[fd] = new_client;
 
+	new_client->send_msg("hello client");
 
-	char reply[] = "hello client";
-	bufferevent_write(new_bev, reply, strlen(reply));
+
+	//char reply[] = "hello client";
+	//bufferevent_write(new_bev, reply, strlen(reply));
 }
 
 void Server::handle_timer(int fd, short event)
 {
 	cout << "handle_timer fd: ¡¾" << fd << "¡¿" << endl;
+
+	for each(auto iter in m_client_list)
+	{
+		char reply[] = "hello client";
+
+		(iter).second->send_msg(string("hello client timer"));
+	}
 }

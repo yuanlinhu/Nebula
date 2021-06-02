@@ -9,10 +9,10 @@ using namespace std;
 
 #pragma  comment(lib,"ws2_32.lib")
 
-class event_base;
-class evconnlistener;
+struct event_base;
+struct evconnlistener;
 class ClientConnection;
-class bufferevent;
+struct bufferevent;
 struct event;
 
 class Server
@@ -27,7 +27,7 @@ public:
 	void run();
 
 	void handle_close(bufferevent *bev);
-	void handle_accept(evutil_socket_t fd, struct sockaddr *address, int socklen);
+	void handle_accept(evutil_socket_t fd, sockaddr *address, int socklen);
 	void handle_timer(int fd, short event);
 
 
