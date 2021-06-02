@@ -118,7 +118,7 @@ void Client::cmd_msg_cb(int fd, short events, void* args)
 		return;
 	}
 
-	cout<<"cmd_msg_cb msg: "<<msg<<endl;
+	//cout<<"cmd_msg_cb msg: "<<msg<<endl;
 
 	Client* client = (Client*)args;
 	bufferevent* bev = client->get_bev();
@@ -160,9 +160,40 @@ void Client::test()
 {
 	Client client;
 	client.init("192.168.1.71", 11111,1);
+	client.init_timer();
 	//client.init_command();
 	client.run();
 }
+
+void on_timer_cb(int fd, short event, void *arg)
+{
+	Client* client = (Client*)arg;
+	client->handle_timer(fd, event);
+}
+
+void Client::handle_timer(int fd, short event)
+{
+	//cout << "handle_timer fd: ¡¾" << fd << "¡¿" << endl;
+
+	send_msg("hello server timer");
+}
+
+void Client::send_msg(string str)
+{
+	//bufferevent_write(m_bev, str.c_str(), str.size());
+}
+
+void Client::init_timer()
+{
+	timeval tv;
+
+	tv.tv_sec = 2;
+	tv.tv_usec = 0;
+	//m_event_timer = evtimer_new(m_base, on_timer_cb, this);
+	m_event_timer = event_new(m_base, -1, EV_PERSIST, on_timer_cb, this);
+	evtimer_add(m_event_timer, &tv);
+}
+
 
 void Client::event_cb(bufferevent* bev, short events, void* args)
 {

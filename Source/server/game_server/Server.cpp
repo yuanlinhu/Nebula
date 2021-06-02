@@ -173,6 +173,6 @@ void Server::handle_timer(int fd, short event)
 	{
 		char reply[] = "hello client";
 
-		(iter).second->send_msg(string("hello client timer"));
+		(iter).second->send_msg("hello client timer");
 	}
 }

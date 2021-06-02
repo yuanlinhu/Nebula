@@ -8,6 +8,8 @@
 
 #pragma comment(lib,"Ws2_32.lib")
 
+using namespace std;
+
 struct event_base;
 struct bufferevent;
 struct event;
@@ -21,6 +23,8 @@ public:
 	void run();
 
 
+	void init_timer();
+
     bufferevent* get_bev();
     int get_port();
     int get_client_id();
@@ -31,6 +35,10 @@ public:
 
 	void hand_input(void* msg, int len);
 
+
+	void handle_timer(int fd, short event);
+
+	void send_msg(string str);
 public:
 	static void test();
 
@@ -46,6 +54,7 @@ private:
 	event_base* m_base = nullptr;
     bufferevent* m_bev = nullptr;
     event* m_ev_cmd = nullptr;
+	event* m_event_timer = nullptr;
 	
 	int m_sock_fd = 0;
 };
