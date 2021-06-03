@@ -47,7 +47,7 @@ void LogicThread::push_msg(bufferevent *bev, string msg)
 
 ThreadMsg* LogicThread::pop_msg()
 {
-	cout << "pop_msg t_id: " << std::this_thread::get_id() << endl;
+	//cout << "pop_msg t_id: " << std::this_thread::get_id() << endl;
 	std::unique_lock<std::mutex> lock(m_mutex);
 	while (m_msg_list.empty())
 	{
@@ -59,13 +59,34 @@ ThreadMsg* LogicThread::pop_msg()
 	return msg;
 }
 
+ThreadMsg* LogicThread::pop_msg1()
+{
+	//cout << "pop_msg t_id: " << std::this_thread::get_id() << endl;
+
+	ThreadMsg* msg = nullptr;
+	std::unique_lock<std::mutex> lock(m_mutex);
+	if (false == m_msg_list.empty())
+	{
+		msg = m_msg_list.front();
+		m_msg_list.pop_front();
+	}
+	
+
+	return msg;
+}
+
 void LogicThread::run()
 {
-	ThreadMsg* msg = pop_msg();
-	if (msg)
+	while (1)
 	{
-		handle_msg(msg);
+		ThreadMsg* msg = pop_msg();
+		if (msg)
+		{
+			handle_msg(msg);
+		}
+		Sleep(1);
 	}
+	
 	
 }
 

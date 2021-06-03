@@ -21,6 +21,7 @@ public:
 
 	void push_msg(bufferevent *bev, string msg);
 	ThreadMsg* pop_msg();
+	ThreadMsg* pop_msg1();
 
 
 	void handle_msg(ThreadMsg* msg);
