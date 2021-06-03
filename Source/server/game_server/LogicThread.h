@@ -20,6 +20,12 @@ public:
 	void start();
 
 	void push_msg(bufferevent *bev, string msg);
+	ThreadMsg* pop_msg();
+
+
+	void handle_msg(ThreadMsg* msg);
+
+	void run();
 
 
 private:

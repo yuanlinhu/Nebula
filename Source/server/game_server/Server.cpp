@@ -154,7 +154,7 @@ void Server::socket_read_cb(bufferevent *bev, void *arg)
 	size_t len = bufferevent_read(bev, msg, sizeof(msg) - 1);
 
 	msg[len] = '\0';
-	printf("server read the data %s\n", msg);
+	//printf("server read the data %s\n", msg);
 
 	Server* server = (Server*)arg;
 	server->handle_input(bev, msg, len);
@@ -221,7 +221,7 @@ void Server::handle_accept(evutil_socket_t fd, sockaddr *address, int socklen)
 
 void Server::handle_timer(int fd, short event)
 {
-	cout << "handle_timer fd: ¡¾" << fd << "¡¿" << endl;
+	//cout << "handle_timer fd: ¡¾" << fd << "¡¿" << endl;
 
 	for each(auto iter in m_client_list)
 	{

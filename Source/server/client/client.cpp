@@ -19,6 +19,9 @@
 #include<event2/util.h>  
 #include <event2/thread.h>
 
+#include <iostream>
+#include <sstream>
+
 using namespace std;
 
 
@@ -174,8 +177,11 @@ void on_timer_cb(int fd, short event, void *arg)
 void Client::handle_timer(int fd, short event)
 {
 	//cout << "handle_timer fd: ¡¾" << fd << "¡¿" << endl;
-
-	send_msg("hello server timer");
+	static int index = 0;
+	stringstream ss;
+	index++;
+	ss << "hello server ping id: " << index;
+	send_msg(ss.str());
 }
 
 void Client::send_msg(string str)
@@ -187,7 +193,7 @@ void Client::init_timer()
 {
 	timeval tv;
 
-	tv.tv_sec = 2;
+	tv.tv_sec = 1;
 	tv.tv_usec = 0;
 	//m_event_timer = evtimer_new(m_base, on_timer_cb, this);
 	m_event_timer = event_new(m_base, -1, EV_PERSIST, on_timer_cb, this);
