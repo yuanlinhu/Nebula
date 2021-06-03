@@ -4,6 +4,7 @@
 #include <event2/util.h>
 #include <map>
 #include <event2/event.h>
+#include <thread>
 
 using namespace std;
 
@@ -37,11 +38,12 @@ public:
 			
 	static void test();
 
-
+	static void thread_fun(event_base * args);
 
 	static void socket_read_cb(bufferevent *bev, void *arg);
 	static void socket_event_cb(bufferevent *bev, short events, void *arg);
 
+	event_base *get_event_base();
 
 private:
 	int m_port = 0;
@@ -51,5 +53,7 @@ private:
 	event* m_event_timer = nullptr;
 
 	std::map<int, ClientConnection*>	m_client_list;
+
+	//std::thread* m_logic_thread = nullptr;
 };
 

@@ -6,7 +6,8 @@
 #include <event2/bufferevent.h>
 #include "ClientConnection.h"
 #include <WinSock2.h>
-
+#include <thread>
+#include <event2/thread.h>
 
 using namespace std;
 
@@ -87,12 +88,43 @@ void Server::accept_error_cb(struct evconnlistener *listener, void *ctx)
 	cout << "accept_error_cb" << endl;
 }
 
+void Server::thread_fun(event_base * args)
+{
+
+	event_base *base = (event_base*)args;
+	//event_base* thread_base = event_base_new();
+	event_base_dispatch(base);
+}
+
 void Server::test()
 {
+
+	evthread_use_windows_threads();
+
 	Server server;
+
+	
+
+
 	server.init(11111);
 	server.init_timer();
+
+
+
+
+	//std::thread thread_obj(&(Server::thread_fun), (server.get_event_base()));
+	////thread_obj.start();
+	//thread_obj.join();
+
+
+	//LIBEVENT_THREAD *thread = threads + tid;
+
 	server.run();
+}
+
+event_base* Server::get_event_base()
+{
+	return m_base;
 }
 
 void Server::socket_read_cb(bufferevent *bev, void *arg)

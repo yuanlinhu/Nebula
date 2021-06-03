@@ -66,12 +66,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ClientConnection.cpp" />
+    <ClCompile Include="LogicThread.cpp" />
+    <ClCompile Include="LogicThreadManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Server.cpp" />
+    <ClCompile Include="ThreadMsg.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientConnection.h" />
+    <ClInclude Include="LogicThread.h" />
+    <ClInclude Include="LogicThreadManager.h" />
     <ClInclude Include="Server.h" />
+    <ClInclude Include="ThreadMsg.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
