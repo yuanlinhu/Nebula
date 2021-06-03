@@ -3,7 +3,7 @@
 #include <event2/bufferevent.h>
 #include <iostream>
 #include <thread>
-
+#include <sstream>
 
 void thread_task(void* args) 
 {
@@ -84,7 +84,7 @@ void LogicThread::run()
 		{
 			handle_msg(msg);
 		}
-		Sleep(1);
+		//Sleep(1);
 	}
 	
 	
@@ -99,10 +99,12 @@ void LogicThread::handle_msg(ThreadMsg* msg)
 	//打印收到的信息
 	{
 		//std::lock_guard<std::mutex> lock(m_mutex);
-		cout << endl << "收到客户端信息: [" << msg->m_msg << "]" << endl;
+		//cout << endl << "收到客户端信息: [" << msg->m_msg << "]" << endl;
 	}
 
+	stringstream ss;
+	ss << msg->m_msg<< " + pong~~~";
+
 	//收到消息后返回给客户端
-	char reply[] = "hello client pong";
-	bufferevent_write(bev, reply, strlen(reply));
+	bufferevent_write(bev, ss.str().c_str(), ss.str().size());
 }

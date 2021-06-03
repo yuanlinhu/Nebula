@@ -25,6 +25,8 @@
 using namespace std;
 
 
+static int index = 0;
+
 struct CommonMsg
 {
     int id;
@@ -155,8 +157,11 @@ void Client::hand_input(void* msg, int len)
 	//cout<<"Client::hand_input common_msg->id: "<<common_msg->id<<endl;
 	//cout<<"Client::hand_input common_msg->type: "<<common_msg->type<<endl;
 	//cout<<"Client::hand_input common_msg->sub_type: "<<common_msg->sub_type<<endl;
-	string str((char*)msg, len);
-	cout << "收到信息:[" << str << "]" << endl;
+	if (index % 10 == 0)
+	{
+		string str((char*)msg, len);
+		cout << "收到信息:[" << str << "]" << endl;
+	}
 }
 
 void Client::test()
@@ -177,7 +182,7 @@ void on_timer_cb(int fd, short event, void *arg)
 void Client::handle_timer(int fd, short event)
 {
 	//cout << "handle_timer fd: 【" << fd << "】" << endl;
-	static int index = 0;
+	
 	stringstream ss;
 	index++;
 	ss << "hello server ping id: " << index;
@@ -193,8 +198,8 @@ void Client::init_timer()
 {
 	timeval tv;
 
-	tv.tv_sec = 1;
-	tv.tv_usec = 0;
+	tv.tv_sec = 0;
+	tv.tv_usec = 1;
 	//m_event_timer = evtimer_new(m_base, on_timer_cb, this);
 	m_event_timer = event_new(m_base, -1, EV_PERSIST, on_timer_cb, this);
 	evtimer_add(m_event_timer, &tv);
