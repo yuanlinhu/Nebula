@@ -9,15 +9,24 @@
 #include <thread>
 #include <event2/thread.h>
 
+#include "LogicThreadManager.h"
+#include "LogicThread.h"
+
 using namespace std;
 
 Server::Server()
 {
+	m_thread_mgr = new LogicThreadManager();
 }
 
 
 Server::~Server()
 {
+}
+
+void Server::init_logic_thread(int thread_num)
+{
+	m_thread_mgr->init(thread_num);
 }
 
 void Server::init(int port)
@@ -51,11 +60,10 @@ void Server::init(int port)
 		return;
 	}
 	evconnlistener_set_error_cb(m_listener, Server::accept_error_cb);
-
-
-
 	cout << "server started success~~~~!! port: " << m_port << endl;
 }
+
+
 
 void on_timer_cb(int fd, short event, void *arg)
 {
@@ -110,6 +118,7 @@ void Server::test()
 	server.init_timer();
 
 
+	server.init_logic_thread(1);
 
 
 	//std::thread thread_obj(&(Server::thread_fun), (server.get_event_base()));
@@ -127,6 +136,17 @@ event_base* Server::get_event_base()
 	return m_base;
 }
 
+void Server::handle_input(bufferevent *bev, char* msg, size_t len)
+{
+	int fd = bufferevent_getfd(bev);
+	LogicThread* thread_info = m_thread_mgr->get_thread(fd);
+	if (thread_info)
+	{
+		thread_info->push_msg(bev, msg);
+	}
+
+}
+
 void Server::socket_read_cb(bufferevent *bev, void *arg)
 {
 	char msg[4096];
@@ -136,8 +156,8 @@ void Server::socket_read_cb(bufferevent *bev, void *arg)
 	msg[len] = '\0';
 	printf("server read the data %s\n", msg);
 
-	char reply[] = "I has read your data";
-	bufferevent_write(bev, reply, strlen(reply));
+	Server* server = (Server*)arg;
+	server->handle_input(bev, msg, len);
 }
 
 void Server::socket_event_cb(bufferevent *bev, short events, void *arg)
@@ -182,7 +202,9 @@ void Server::handle_accept(evutil_socket_t fd, sockaddr *address, int socklen)
 		return;
 	}
 
-	bufferevent* new_bev = bufferevent_socket_new(m_base, fd, BEV_OPT_CLOSE_ON_FREE);
+	//bufferevent* new_bev = bufferevent_socket_new(m_base, fd, BEV_OPT_CLOSE_ON_FREE);
+	bufferevent* new_bev = bufferevent_socket_new(m_base, fd, BEV_OPT_CLOSE_ON_FREE | BEV_OPT_THREADSAFE);	//多线程版本
+
 	bufferevent_setcb(new_bev, Server::socket_read_cb, NULL, Server::socket_event_cb, this);
 	bufferevent_enable(new_bev, EV_READ | EV_PERSIST);
 
@@ -190,7 +212,7 @@ void Server::handle_accept(evutil_socket_t fd, sockaddr *address, int socklen)
 	new_client->init(fd, address, socklen);
 	m_client_list[fd] = new_client;
 
-	new_client->send_msg("hello client");
+	//new_client->send_msg("hello client");
 
 
 	//char reply[] = "hello client";
@@ -205,6 +227,6 @@ void Server::handle_timer(int fd, short event)
 	{
 		char reply[] = "hello client";
 
-		(iter).second->send_msg("hello client timer");
+		//(iter).second->send_msg("hello client timer");
 	}
 }

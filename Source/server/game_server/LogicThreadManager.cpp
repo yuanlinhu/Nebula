@@ -18,18 +18,19 @@ void LogicThreadManager::init(int threadNum)
 		threadNum = 1;
 	}
 
-	m_thread_list.reserve(threadNum);
+	m_thread = new LogicThread();
 
-	for (int i = 0; i < threadNum; ++i)
-	{
-		LogicThread* newThead = new LogicThread();
-		m_thread_list.push_back(newThead);
-	}
+	//for (int i = 0; i < threadNum; ++i)
+	//{
+	//	LogicThread* newThead = new LogicThread();
+	//	m_thread_list.push_back(newThead);
+	//}
 }
 
 LogicThread* LogicThreadManager::get_thread(int thread_id)
 {
+	return m_thread;
 	//暂时只有一个线程
-	return m_thread_list[0];
+	//return m_thread_list[0];
 }
 

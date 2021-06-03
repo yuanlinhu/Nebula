@@ -19,7 +19,8 @@ public:
 
 	LogicThread* get_thread(int thread_id);
 
-
+private:
 	vector<LogicThread*>		m_thread_list;
+	LogicThread*			m_thread = nullptr;
 };
 

@@ -180,7 +180,7 @@ void Client::handle_timer(int fd, short event)
 
 void Client::send_msg(string str)
 {
-	//bufferevent_write(m_bev, str.c_str(), str.size());
+	bufferevent_write(m_bev, str.c_str(), str.size());
 }
 
 void Client::init_timer()

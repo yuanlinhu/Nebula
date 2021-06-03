@@ -2,10 +2,12 @@
 
 #include <thread>
 #include <list>
+#include <mutex>
+#include <condition_variable>
 
 using namespace std;
 
-
+struct bufferevent;
 class ThreadMsg;
 
 class LogicThread
@@ -17,14 +19,14 @@ public:
 
 	void start();
 
-	void push_msg(string msg);
-	void pop_msg(string msg);
+	void push_msg(bufferevent *bev, string msg);
 
 
 private:
-	std::thread m_thread;
+	std::mutex		m_mutex;
+	std::condition_variable m_condition;
+	std::thread		m_thread;
 
-	list<ThreadMsg*>	m_in_msg_list;
-	list<ThreadMsg*>	m_out_msg_list;
+	list<ThreadMsg*>	m_msg_list;
 };
 

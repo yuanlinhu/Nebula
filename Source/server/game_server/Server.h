@@ -12,9 +12,14 @@ using namespace std;
 
 struct event_base;
 struct evconnlistener;
-class ClientConnection;
 struct bufferevent;
 struct event;
+
+
+class ClientConnection;
+class LogicThreadManager;
+
+
 
 class Server
 {
@@ -23,6 +28,7 @@ public:
 	~Server();
 
 
+	void init_logic_thread(int thread_num);
 	void init(int port);
 	void init_timer();
 	void run();
@@ -30,6 +36,9 @@ public:
 	void handle_close(bufferevent *bev);
 	void handle_accept(evutil_socket_t fd, sockaddr *address, int socklen);
 	void handle_timer(int fd, short event);
+
+	//readµ½ socketÊý¾Ý
+	void handle_input(bufferevent *bev, char* msg, size_t len);
 
 
 	static void	accept_conn_cb(struct evconnlistener *listener, evutil_socket_t fd, struct sockaddr *address, int socklen, void *ctx);
@@ -54,6 +63,6 @@ private:
 
 	std::map<int, ClientConnection*>	m_client_list;
 
-	//std::thread* m_logic_thread = nullptr;
+	LogicThreadManager*		m_thread_mgr = nullptr;
 };
 
