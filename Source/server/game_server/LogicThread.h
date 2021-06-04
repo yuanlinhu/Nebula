@@ -31,6 +31,7 @@ public:
 
 
 	void handle_msg(ThreadMsg* msg);
+	void handle_timer(int fd, short event);
 
 	void init();
 	void run();

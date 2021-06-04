@@ -205,7 +205,7 @@ void Server::handle_accept(evutil_socket_t fd, sockaddr *address, int socklen)
 		return;
 	}
 
-	//bufferevent* new_bev = bufferevent_socket_new(m_base, fd, BEV_OPT_CLOSE_ON_FREE);
+	//bufferevent* new_bev = bufferevent_socket_new(m_base, fd, BEV_OPT_CLOSE_ON_FREE);	//单线程版本
 	bufferevent* new_bev = bufferevent_socket_new(m_base, fd, BEV_OPT_CLOSE_ON_FREE | BEV_OPT_THREADSAFE);	//多线程版本
 
 	bufferevent_setcb(new_bev, Server::socket_read_cb, NULL, Server::socket_event_cb, this);
@@ -232,4 +232,6 @@ void Server::handle_timer(int fd, short event)
 
 		//(iter).second->send_msg("hello client timer");
 	}
+
+	m_thread_mgr->handle_timer(fd, event);
 }

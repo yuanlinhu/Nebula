@@ -27,6 +27,11 @@ void LogicThreadManager::init(int threadNum)
 	//}
 }
 
+void LogicThreadManager::handle_timer(int fd, short event)
+{
+	m_thread->handle_timer(fd, event);
+}
+
 LogicThread* LogicThreadManager::get_thread(int thread_id)
 {
 	return m_thread;

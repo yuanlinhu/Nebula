@@ -117,3 +117,12 @@ void LogicThread::handle_msg(ThreadMsg* msg)
 	//收到消息后返回给客户端
 	bufferevent_write(bev, ss.str().c_str(), ss.str().size());
 }
+
+void LogicThread::handle_timer(int fd, short event)
+{
+	stringstream ss;
+	ss << "handle_timer fd";
+
+	//收到消息后返回给客户端
+	//bufferevent_write(bev, ss.str().c_str(), ss.str().size());
+}

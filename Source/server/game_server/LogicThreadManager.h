@@ -17,6 +17,8 @@ public:
 
 	void init(int threadNum);
 
+	void handle_timer(int fd, short event);
+
 	LogicThread* get_thread(int thread_id);
 
 private:
