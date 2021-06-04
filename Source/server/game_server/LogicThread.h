@@ -7,8 +7,14 @@
 
 using namespace std;
 
+
+struct event_base;
 struct bufferevent;
+
+
 class ThreadMsg;
+
+
 
 class LogicThread
 {
@@ -26,6 +32,7 @@ public:
 
 	void handle_msg(ThreadMsg* msg);
 
+	void init();
 	void run();
 
 
@@ -35,5 +42,7 @@ private:
 	std::thread		m_thread;
 
 	list<ThreadMsg*>	m_msg_list;
+
+	//event_base *m_base = nullptr;
 };
 

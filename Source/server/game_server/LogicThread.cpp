@@ -4,11 +4,13 @@
 #include <iostream>
 #include <thread>
 #include <sstream>
+#include <event2/event.h>
 
 void thread_task(void* args) 
 {
 	LogicThread* logic_thread = (LogicThread*)args;
 
+	logic_thread->init();
 	logic_thread->run();
 }
 
@@ -75,10 +77,17 @@ ThreadMsg* LogicThread::pop_msg1()
 	return msg;
 }
 
+void LogicThread::init()
+{
+//	m_base = event_base_new();
+}
+
 void LogicThread::run()
 {
 	while (1)
 	{
+//		event_base_dispatch(m_base);
+
 		ThreadMsg* msg = pop_msg();
 		if (msg)
 		{

@@ -90,7 +90,7 @@ void Client::init(std::string ip, int port, int client_id)
 	server_addr.sin_port = htons(m_port);
 	inet_pton(AF_INET, ip.c_str(), &server_addr.sin_addr);
 
-	int sock_fd = 0;
+	//int sock_fd = 0;
 	m_sock_fd = bufferevent_socket_connect(m_bev, (sockaddr*)&server_addr, sizeof(server_addr));
 
 
@@ -198,8 +198,8 @@ void Client::init_timer()
 {
 	timeval tv;
 
-	tv.tv_sec = 0;
-	tv.tv_usec = 1;
+	tv.tv_sec = 10;
+	tv.tv_usec = 0;
 	//m_event_timer = evtimer_new(m_base, on_timer_cb, this);
 	m_event_timer = event_new(m_base, -1, EV_PERSIST, on_timer_cb, this);
 	evtimer_add(m_event_timer, &tv);

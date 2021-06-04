@@ -108,6 +108,7 @@ void Server::test()
 {
 
 	evthread_use_windows_threads();
+	
 
 	Server server;
 
@@ -128,6 +129,8 @@ void Server::test()
 
 	//LIBEVENT_THREAD *thread = threads + tid;
 
+
+	evthread_make_base_notifiable(server.get_event_base());
 	server.run();
 }
 
