@@ -101,7 +101,7 @@ void LogicThread::run()
 
 void LogicThread::handle_msg(ThreadMsg* msg)
 {
-
+	cout << "LogicThread::handle_msg ------------- tid = " << std::this_thread::get_id() << endl;
 	bufferevent *bev = (bufferevent*)msg->m_args;
 	int fd = bufferevent_getfd(bev);
 
@@ -122,6 +122,8 @@ void LogicThread::handle_timer(int fd, short event)
 {
 	stringstream ss;
 	ss << "handle_timer fd";
+
+	cout << "LogicThread::handle_timer tid = " << std::this_thread::get_id() << endl;
 
 	//收到消息后返回给客户端
 	//bufferevent_write(bev, ss.str().c_str(), ss.str().size());

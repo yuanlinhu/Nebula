@@ -76,7 +76,7 @@ void Server::init_timer()
 {
 	timeval tv;
 
-	tv.tv_sec = 3;
+	tv.tv_sec = 5;
 	tv.tv_usec = 0;
 	//m_event_timer = evtimer_new(m_base, on_timer_cb, this);
 	m_event_timer = event_new(m_base, -1, EV_PERSIST, on_timer_cb, this);
@@ -224,7 +224,7 @@ void Server::handle_accept(evutil_socket_t fd, sockaddr *address, int socklen)
 
 void Server::handle_timer(int fd, short event)
 {
-	//cout << "handle_timer fd: ¡¾" << fd << "¡¿" << endl;
+	cout << "Server::handle_timer tid: ¡¾" << std::this_thread::get_id() << "¡¿" << endl;
 
 	for each(auto iter in m_client_list)
 	{
