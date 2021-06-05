@@ -14,6 +14,8 @@
 
 using namespace std;
 
+Server* g_server = nullptr;
+
 Server::Server()
 {
 	m_thread_mgr = new LogicThreadManager();
@@ -76,10 +78,9 @@ void Server::init_timer()
 {
 	timeval tv;
 
-	tv.tv_sec = 5;
+	tv.tv_sec = 2;
 	tv.tv_usec = 0;
-	//m_event_timer = evtimer_new(m_base, on_timer_cb, this);
-	m_event_timer = event_new(m_base, -1, EV_PERSIST, on_timer_cb, this);
+	m_event_timer = event_new(m_base, -1, EV_TIMEOUT, on_timer_cb, this);
 	evtimer_add(m_event_timer, &tv);
 }
 
@@ -106,31 +107,15 @@ void Server::thread_fun(event_base * args)
 
 void Server::test()
 {
-
 	evthread_use_windows_threads();
-	
 
 	Server server;
-
-	
-
-
 	server.init(11111);
-	server.init_timer();
-
-
+	//server.init_timer();
 	server.init_logic_thread(1);
 
-
-	//std::thread thread_obj(&(Server::thread_fun), (server.get_event_base()));
-	////thread_obj.start();
-	//thread_obj.join();
-
-
-	//LIBEVENT_THREAD *thread = threads + tid;
-
-
-	evthread_make_base_notifiable(server.get_event_base());
+	g_server = &server;
+	
 	server.run();
 }
 
@@ -147,6 +132,8 @@ void Server::handle_input(bufferevent *bev, char* msg, size_t len)
 	{
 		thread_info->push_msg(bev, msg);
 	}
+
+
 
 }
 

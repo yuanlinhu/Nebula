@@ -1,0 +1,30 @@
+
+
+
+方法1： 1.主线程处理 accept，read  操作， 将收到的协议 构造成 taskMsg 传给子线程 task_queue,  
+		
+		2. 子线程循环获取taskMsg， 然后子线程处理逻辑后，将返回协议直接write到socket(从taskMsg获取sockid， 并在socketMgr里查找对应的连接)
+
+
+
+
+
+方法2： 1. 主线程只处理 accept， 在子线程创建 clientConnection
+
+
+方法3： 不通过 mutex + cond 来实现唤醒 子线程，  用 one eventloop per thread 方式来唤醒子线程
+
+
+
+
+TODO：
+	1. Thread_Pool 实现逻辑
+
+
+
+
+
+
+
+
+

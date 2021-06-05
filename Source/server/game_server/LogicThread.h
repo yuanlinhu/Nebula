@@ -33,8 +33,12 @@ public:
 	void handle_msg(ThreadMsg* msg);
 	void handle_timer(int fd, short event);
 
+	void add_timer();
+
 	void init();
 	void run();
+
+	void run_dispatch();
 
 
 private:
@@ -44,6 +48,7 @@ private:
 
 	list<ThreadMsg*>	m_msg_list;
 
+	event_base *m_base_thread = nullptr;
 	//event_base *m_base = nullptr;
 };
 

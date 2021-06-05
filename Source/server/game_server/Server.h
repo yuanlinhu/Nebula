@@ -66,3 +66,5 @@ private:
 	LogicThreadManager*		m_thread_mgr = nullptr;
 };
 
+extern Server* g_server;
+

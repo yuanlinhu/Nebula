@@ -5,6 +5,7 @@
 #include <thread>
 #include <sstream>
 #include <event2/event.h>
+#include "Server.h"
 
 void thread_task(void* args) 
 {
@@ -49,21 +50,23 @@ void LogicThread::push_msg(bufferevent *bev, string msg)
 
 ThreadMsg* LogicThread::pop_msg()
 {
-	//cout << "pop_msg t_id: " << std::this_thread::get_id() << endl;
+	cout << "pop_msg t_id: " << std::this_thread::get_id() << endl;
+
 	std::unique_lock<std::mutex> lock(m_mutex);
 	while (m_msg_list.empty())
 	{
 		m_condition.wait(lock);
 	}
+
 	ThreadMsg* msg = m_msg_list.front();
 	m_msg_list.pop_front();
-
 	return msg;
+
 }
 
 ThreadMsg* LogicThread::pop_msg1()
 {
-	//cout << "pop_msg t_id: " << std::this_thread::get_id() << endl;
+	cout << "pop_msg1 t_id: " << std::this_thread::get_id() << endl;
 
 	ThreadMsg* msg = nullptr;
 	std::unique_lock<std::mutex> lock(m_mutex);
@@ -72,15 +75,28 @@ ThreadMsg* LogicThread::pop_msg1()
 		msg = m_msg_list.front();
 		m_msg_list.pop_front();
 	}
-	
-
 	return msg;
 }
 
 void LogicThread::init()
 {
-//	m_base = event_base_new();
+	m_base_thread = event_base_new();
 }
+
+void LogicThread::run_dispatch()
+{
+	//while (1)
+	{
+		event_base_dispatch(m_base_thread);
+		ThreadMsg* msg = pop_msg1();
+		if (msg)
+		{
+			handle_msg(msg);
+		}
+	}
+}
+
+
 
 void LogicThread::run()
 {
@@ -88,6 +104,8 @@ void LogicThread::run()
 	{
 //		event_base_dispatch(m_base);
 
+		//这里休眠， 等待主线程唤醒
+		//evthread_notify_base()
 		ThreadMsg* msg = pop_msg();
 		if (msg)
 		{
@@ -116,6 +134,8 @@ void LogicThread::handle_msg(ThreadMsg* msg)
 
 	//收到消息后返回给客户端
 	bufferevent_write(bev, ss.str().c_str(), ss.str().size());
+
+	add_timer(); //testcode
 }
 
 void LogicThread::handle_timer(int fd, short event)
@@ -127,4 +147,10 @@ void LogicThread::handle_timer(int fd, short event)
 
 	//收到消息后返回给客户端
 	//bufferevent_write(bev, ss.str().c_str(), ss.str().size());
+}
+
+void LogicThread::add_timer()
+{
+	g_server->init_timer();
+	//evthread_make_base_notifiable(server.get_event_base());
 }

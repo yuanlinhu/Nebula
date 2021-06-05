@@ -198,13 +198,18 @@ void Client::init_timer()
 {
 	timeval tv;
 
-	tv.tv_sec = 2;
+	tv.tv_sec = 20;
 	tv.tv_usec = 0;
 	//m_event_timer = evtimer_new(m_base, on_timer_cb, this);
 	m_event_timer = event_new(m_base, -1, EV_PERSIST, on_timer_cb, this);
 	evtimer_add(m_event_timer, &tv);
 }
 
+void Client::clear()
+{
+	m_bev = nullptr;
+	event_free(m_event_timer);
+}
 
 void Client::event_cb(bufferevent* bev, short events, void* args)
 {
@@ -212,6 +217,9 @@ void Client::event_cb(bufferevent* bev, short events, void* args)
 	if(events & BEV_EVENT_EOF)
 	{
 		cout<<"connection closed "<<endl;
+		Client* client = (Client*)args;
+		client->clear();
+		//m_bev = nullptr;
 	}
 	else if(events & BEV_EVENT_ERROR)
 	{
